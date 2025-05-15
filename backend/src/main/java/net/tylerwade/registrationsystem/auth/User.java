@@ -6,11 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.tylerwade.registrationsystem.auth.dto.UserDTO;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails {
 
     @Id
@@ -44,11 +48,11 @@ public class User implements UserDetails {
     @Column(name = "authority")
     private Set<String> grantedAuthorities;
 
-    @Column(nullable = false)
-    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+    @CreatedDate
+    private Instant createdAt;
 
-    @org.springframework.data.annotation.Version
-    private Long version;
+    @LastModifiedDate
+    private Instant modifiedAt;
 
     public User(String username, String firstName, String lastName, String password, Set<String> grantedAuthorities) {
         this.username = username;
@@ -105,6 +109,7 @@ public class User implements UserDetails {
                 firstName,
                 lastName,
                 grantedAuthorities,
-                createdAt);
+                createdAt,
+                modifiedAt);
     }
 }

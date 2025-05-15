@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,15 +21,18 @@ public class AuthTestsUtil {
     public List<User> createMockUsers() {
         User user1 = new User("johndoe@email.com", "John", "Doe", passwordEncoder.encode("123456"), UserRole.STUDENT.getGrantedAuthoritiesString());
         user1.setId(UUID.randomUUID().toString());
-        user1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        user1.setCreatedAt(Instant.now());
+        user1.setModifiedAt(Instant.now());
 
         User user2 = new User("janedoe@email.com", "Jane", "Doe", passwordEncoder.encode("123456"), UserRole.INSTRUCTOR.getGrantedAuthoritiesString());
         user2.setId(UUID.randomUUID().toString());
-        user2.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        user2.setCreatedAt(Instant.now());
+        user2.setModifiedAt(Instant.now());
 
         User user3 = new User("jacobsmith@email.com", "Jacob", "Smith", passwordEncoder.encode("123456"), UserRole.ADMIN.getGrantedAuthoritiesString());
         user3.setId(UUID.randomUUID().toString());
-        user3.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        user3.setCreatedAt(Instant.now());
+        user3.setModifiedAt(Instant.now());
 
         return List.of(user1, user2, user3);
     }

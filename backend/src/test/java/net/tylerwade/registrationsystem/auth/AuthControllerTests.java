@@ -23,6 +23,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -94,7 +95,7 @@ public class AuthControllerTests {
         mockUser.setUsername("test@example.com");
         mockUser.setFirstName("John");
         mockUser.setLastName("Doe");
-        mockUser.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        mockUser.setCreatedAt(Instant.now());
         mockUser.setGrantedAuthorities(UserRole.STUDENT.getGrantedAuthoritiesString());
 
         Authentication mockAuth = new UsernamePasswordAuthenticationToken(mockUser.getUsername(), null, mockUser.getAuthorities());
@@ -159,7 +160,7 @@ public class AuthControllerTests {
         mockUser.setPassword("123456");
         mockUser.setFirstName("John");
         mockUser.setLastName("Doe");
-        mockUser.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        mockUser.setCreatedAt(Instant.now());
         mockUser.setGrantedAuthorities(UserRole.STUDENT.getGrantedAuthoritiesString());
 
         when(service.getUser(any(Authentication.class))).thenReturn(mockUser);
@@ -183,7 +184,7 @@ public class AuthControllerTests {
         mockUser.setUsername("user@example.com");
         mockUser.setFirstName("John");
         mockUser.setLastName("Doe");
-        mockUser.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        mockUser.setCreatedAt(Instant.now());
         mockUser.setGrantedAuthorities(UserRole.STUDENT.getGrantedAuthoritiesString());
 
         when(service.getUser(any(Authentication.class))).thenReturn(mockUser);
@@ -206,7 +207,7 @@ public class AuthControllerTests {
         mockUser.setUsername("user@example.com");
         mockUser.setFirstName("John");
         mockUser.setLastName("Doe");
-        mockUser.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        mockUser.setCreatedAt(Instant.now());
         mockUser.setGrantedAuthorities(UserRole.STUDENT.getGrantedAuthoritiesString());
 
         // Act & Assert

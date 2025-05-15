@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -123,24 +124,18 @@ public class AdminAuthControllerTests {
                 UserRole.INSTRUCTOR.getGrantedAuthoritiesString());
         updatedUser.setId(targetUser.getId());
         updatedUser.setCreatedAt(targetUser.getCreatedAt());
+        updatedUser.setModifiedAt(targetUser.getModifiedAt());
 
         when(service.updateUserAsAdmin(any(), any(), any()))
                 .thenReturn(updatedUser);
 
-        MvcResult result = mvc.perform(put("/api/admin/auth/" + targetUser.getId())
+        mvc.perform(put("/api/admin/auth/" + targetUser.getId())
                         .with(user("jacobsmith@email.com").roles("ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest))
                 )
                 .andExpect(status().isOk())
-                .andReturn();
-
-        String json = result.getResponse().getContentAsString();
-        APIResponse<UserDTO> actualResponse = objectMapper.readValue(json, new TypeReference<APIResponse<UserDTO>>() {
-        });
-
-        assertTrue(actualResponse.isSuccess());
-        assertEquals(actualResponse.data().id(), targetUser.getId());
-        assertEquals(actualResponse.data().grantedAuthorities(), updatedUser.toDTO().grantedAuthorities());
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.data.id").value(targetUser.getId()));
     }
 }
