@@ -20,13 +20,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,8 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, AuthTestsUtil.class})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@ActiveProfiles("test")
 public class AdminAuthControllerTests {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -54,23 +54,14 @@ public class AdminAuthControllerTests {
     @MockitoBean
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    AuthTestsUtil authTestsUtil;
+
     List<User> mockUsers;
 
     @BeforeEach
     void loadMockUsers() {
-        User user1 = new User("johndoe@email.com", "John", "Doe", passwordEncoder.encode("123456"), UserRole.STUDENT.getGrantedAuthoritiesString());
-        user1.setId(UUID.randomUUID().toString());
-        user1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-
-        User user2 = new User("janedoe@email.com", "Jane", "Doe", passwordEncoder.encode("123456"), UserRole.INSTRUCTOR.getGrantedAuthoritiesString());
-        user2.setId(UUID.randomUUID().toString());
-        user2.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-
-        User user3 = new User("jacobsmith@email.com", "Jacob", "Smith", passwordEncoder.encode("123456"), UserRole.ADMIN.getGrantedAuthoritiesString());
-        user3.setId(UUID.randomUUID().toString());
-        user3.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-
-        mockUsers = List.of(user1, user2, user3);
+        this.mockUsers = authTestsUtil.createMockUsers();
     }
 
 
@@ -136,10 +127,6 @@ public class AdminAuthControllerTests {
         when(service.updateUserAsAdmin(any(), any(), any()))
                 .thenReturn(updatedUser);
 
-        String expectedResponseBody = objectMapper.writeValueAsString(
-                new APIResponse<>(true, "User updated.", updatedUser.toDTO())
-        );
-
         MvcResult result = mvc.perform(put("/api/admin/auth/" + targetUser.getId())
                         .with(user("jacobsmith@email.com").roles("ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -149,7 +136,8 @@ public class AdminAuthControllerTests {
                 .andReturn();
 
         String json = result.getResponse().getContentAsString();
-        APIResponse<UserDTO> actualResponse = objectMapper.readValue(json, new TypeReference<APIResponse<UserDTO>>() {});
+        APIResponse<UserDTO> actualResponse = objectMapper.readValue(json, new TypeReference<APIResponse<UserDTO>>() {
+        });
 
         assertTrue(actualResponse.isSuccess());
         assertEquals(actualResponse.data().id(), targetUser.getId());

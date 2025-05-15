@@ -1,7 +1,5 @@
 package net.tylerwade.registrationsystem.auth.dto;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import java.sql.Timestamp;
 import java.util.Set;
 

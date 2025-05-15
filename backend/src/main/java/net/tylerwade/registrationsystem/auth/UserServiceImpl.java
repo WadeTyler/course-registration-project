@@ -13,10 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static net.tylerwade.registrationsystem.config.security.authorities.UserRole.STUDENT;
-import static net.tylerwade.registrationsystem.config.security.authorities.UserRole.valueOf;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -55,7 +53,7 @@ public class UserServiceImpl implements UserService {
     public User signup(SignupRequest signupRequest) throws HttpRequestException {
         // Check if user already exists
         if (this.userRepository.existsByUsernameIgnoreCase(signupRequest.username())) {
-            throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE, "Email already exists.");
+            throw new HttpRequestException(HttpStatus.CONFLICT, "Email already exists.");
         }
 
         // Create new user
