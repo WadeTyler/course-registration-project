@@ -1,13 +1,14 @@
 import './styles/App.css'
 import HomePage from "./page/HomePage.tsx";
+import {Route, Routes} from "react-router-dom";
 
 function App() {
 
-  // Pages go here. Conditional rendering logic will be added later for changing pages. For now just comment out pages you're not working on.
   return (
-    <>
-      <HomePage />
-    </>
+    <Routes>
+      {/* Routes go here. Path is the endpoint for the element. */}
+      <Route path="/" element={<HomePage />} />
+    </Routes>
   )
 }
 
