@@ -1,6 +1,9 @@
 package net.tylerwade.registrationsystem.auth.dto;
 
-import java.sql.Timestamp;
+import org.springframework.security.core.GrantedAuthority;
 
-public record UserDTO(String id, String username, String firstName, String lastName, Timestamp createdAt) {
+import java.sql.Timestamp;
+import java.util.Set;
+
+public record UserDTO(String id, String username, String firstName, String lastName, Set<? extends GrantedAuthority> grantedAuthorities, Timestamp createdAt) {
 }

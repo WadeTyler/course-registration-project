@@ -3,6 +3,7 @@ package net.tylerwade.registrationsystem.auth.token;
 import jakarta.servlet.http.Cookie;
 import net.tylerwade.registrationsystem.config.AppProperties;
 import net.tylerwade.registrationsystem.config.security.JwtProperties;
+import net.tylerwade.registrationsystem.config.security.authorities.UserRole;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -28,15 +29,29 @@ public class TokenServiceImpl implements TokenService {
 
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
-        String scope = authentication.getAuthorities().stream()
+
+        // Separate ROLE_* authorities for "roles", others for "scope"
+        var authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+                .toList();
+
+        var roles = authorities.stream()
+                .filter(auth -> auth.startsWith("ROLE_"))
+                .toList();
+
+        var scopes = authorities.stream()
+                .filter(auth -> !auth.startsWith("ROLE_"))
+                .toList();
+
+        String scopeString = String.join(" ", scopes);
+
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(jwtProperties.issuer())
                 .issuedAt(now)
                 .expiresAt(now.plus(jwtProperties.expirationMs(), ChronoUnit.MILLIS))
                 .subject(authentication.getName())
-                .claim("scope", scope)
+                .claim("scope", scopeString)
+                .claim("roles", roles)
                 .build();
 
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

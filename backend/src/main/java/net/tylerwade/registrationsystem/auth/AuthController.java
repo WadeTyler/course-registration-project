@@ -1,6 +1,5 @@
 package net.tylerwade.registrationsystem.auth;
 
-import com.nimbusds.jose.proc.SecurityContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -13,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,32 +31,30 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest, HttpServletResponse response) throws HttpRequestException {
         User user = this.userService.signup(signupRequest);
-        UserDTO userDTO = this.userService.convertToDTO(user);
 
         // Add authCookie
         Authentication authentication = userService.createAuthenticationForUser(user);
         Cookie authCookie = tokenService.generateAuthTokenCookie(authentication);
         response.addCookie(authCookie);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new APIResponse<>(true, "Signup successful.", userDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new APIResponse<>(true, "Signup successful.", user.toDTO()));
     }
 
     // Get Token
     @PostMapping("/login")
     public ResponseEntity<?> getToken(Authentication authentication, HttpServletResponse response) {
         Cookie authCookie = tokenService.generateAuthTokenCookie(authentication);
-
         response.addCookie(authCookie);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new APIResponse<>(true, "Token retrieved.", authCookie.getValue()));
+
+        UserDTO user = userService.getUser(authentication).toDTO();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new APIResponse<>(true, "Login successful.", user));
     }
 
     // Get User
     @GetMapping
     public ResponseEntity<?> getUser(Authentication authentication) {
-        UserDTO userDTO = this.userService.convertToDTO(
-                this.userService.getUser(authentication)
-        );
-        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(true, "User Retrieved.", userDTO));
+        UserDTO user = this.userService.getUser(authentication).toDTO();
+        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(true, "User Retrieved.", user));
     }
 
     @PostMapping("/logout")

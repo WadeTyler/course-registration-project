@@ -1,9 +1,10 @@
 package net.tylerwade.registrationsystem.auth;
 
 import net.tylerwade.registrationsystem.auth.dto.SignupRequest;
-import net.tylerwade.registrationsystem.auth.dto.UserDTO;
+import net.tylerwade.registrationsystem.auth.dto.UpdateUserRequest;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,6 +26,14 @@ public interface UserService extends UserDetailsService {
     User findById(String userId) throws HttpRequestException;
 
     /**
+     * Retrieves a paginated list of all users in the system.
+     *
+     * @param pageable the pagination information, including page number, size, and sort order
+     * @return a page of User entities
+     */
+    Page<User> findAll(Pageable pageable, String search);
+
+    /**
      * Loads a user by their username.
      *
      * @param username The username of the user.
@@ -41,16 +50,6 @@ public interface UserService extends UserDetailsService {
      * @throws HttpRequestException If an error occurs during signup.
      */
     User signup(SignupRequest signupRequest) throws HttpRequestException;
-
-    /**
-     * Converts a User entity to a UserDTO.
-     *
-     * @param user The user entity.
-     * @return The UserDTO representation.
-     */
-    default UserDTO convertToDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getCreatedAt());
-    }
 
     /**
      * Retrieves the currently authenticated user.
@@ -70,4 +69,20 @@ public interface UserService extends UserDetailsService {
      * @return an Authentication representing the user
      */
     Authentication createAuthenticationForUser(User user);
+
+    /**
+     * Updates an existing user with the provided information.
+     *
+     * @param userId the ID of the user to update
+     * @param updateUserRequest the request object containing updated user details
+     * @param authentication the authentication context of the administrator performing the update
+     * @return the updated User object
+     */
+    User updateUserAsAdmin(String userId, UpdateUserRequest updateUserRequest, Authentication authentication) throws HttpRequestException;
+
+    /**
+     * Creates a default admin user in the system if one does not already exist.
+     * This method is typically used for initial setup or to ensure that an admin account is available.
+     */
+    void createDefaultAdmin();
 }

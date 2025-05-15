@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.tylerwade.registrationsystem.auth.dto.UserDTO;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -37,12 +39,24 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private Set<? extends GrantedAuthority> grantedAuthorities;
+
     @Column(nullable = false)
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
+    public User(String username, String firstName, String lastName, String password, Set<? extends GrantedAuthority> grantedAuthorities) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.grantedAuthorities = grantedAuthorities;
+    }
+
+    // --- UserDetail Functions ---
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return grantedAuthorities;
     }
 
     @Override
@@ -82,6 +96,7 @@ public class User implements UserDetails {
                 username,
                 firstName,
                 lastName,
+                grantedAuthorities,
                 createdAt);
     }
 }
