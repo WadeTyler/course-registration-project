@@ -1,4 +1,4 @@
-package net.tylerwade.registrationsystem.config.security;
+package net.tylerwade.registrationsystem.config.security.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

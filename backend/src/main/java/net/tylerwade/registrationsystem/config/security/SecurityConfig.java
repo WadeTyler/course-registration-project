@@ -1,12 +1,7 @@
 package net.tylerwade.registrationsystem.config.security;
 
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
 import net.tylerwade.registrationsystem.config.security.authorities.UserRole;
+import net.tylerwade.registrationsystem.config.security.jwt.JwtCookieToAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -30,13 +19,13 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtProperties jwtProperties;
     private final JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter;
+    private final JwtAuthenticationConverter jwtAuthenticationConverter;
 
     @Autowired
-    public SecurityConfig(JwtProperties jwtProperties, JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter) {
-        this.jwtProperties = jwtProperties;
+    public SecurityConfig(JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter, JwtAuthenticationConverter jwtAuthenticationConverter) {
         this.jwtCookieToAuthorizationFilter = jwtCookieToAuthorizationFilter;
+        this.jwtAuthenticationConverter = jwtAuthenticationConverter;
     }
 
     @Bean
@@ -55,7 +44,7 @@ public class SecurityConfig {
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter)
                         )
                 )
                 .exceptionHandling(ex -> ex
@@ -67,38 +56,4 @@ public class SecurityConfig {
                 .build();
     }
 
-    @Bean
-    JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(jwtProperties.publicKey()).build();
-    }
-
-    @Bean
-    JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(jwtProperties.publicKey()).privateKey(jwtProperties.privateKey()).build();
-        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
-    }
-
-
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter rolesConverter = new JwtGrantedAuthoritiesConverter();
-        rolesConverter.setAuthorityPrefix("");
-        rolesConverter.setAuthoritiesClaimName("roles");
-
-        JwtGrantedAuthoritiesConverter scopeConverter = new JwtGrantedAuthoritiesConverter();
-        scopeConverter.setAuthorityPrefix("SCOPE_");
-        scopeConverter.setAuthoritiesClaimName("scope");
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
-            Collection<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.addAll(rolesConverter.convert(jwt));
-            authorities.addAll(scopeConverter.convert(jwt));
-            return authorities;
-        });
-
-        return jwtAuthenticationConverter;
-    }
 }

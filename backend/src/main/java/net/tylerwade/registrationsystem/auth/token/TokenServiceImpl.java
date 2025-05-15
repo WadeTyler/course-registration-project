@@ -2,8 +2,7 @@ package net.tylerwade.registrationsystem.auth.token;
 
 import jakarta.servlet.http.Cookie;
 import net.tylerwade.registrationsystem.config.AppProperties;
-import net.tylerwade.registrationsystem.config.security.JwtProperties;
-import net.tylerwade.registrationsystem.config.security.authorities.UserRole;
+import net.tylerwade.registrationsystem.config.security.jwt.JwtProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.stream.Collectors;
 
 @Service
 public class TokenServiceImpl implements TokenService {
