@@ -38,9 +38,16 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtCookieToAuthorizationFilter, BearerTokenAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
+                        // Doc Routes
                         .requestMatchers("v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        // Public Routes
                         .requestMatchers("/api/auth/signup").permitAll()
+
+                        // Admin Routes
                         .requestMatchers("/api/admin/**").hasRole(UserRole.ADMIN.name())
+
+                        // All Routes
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
