@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtCookieToAuthorizationFilter, BearerTokenAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         // Doc Routes
-                        .requestMatchers("v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
                         // Public Routes
                         .requestMatchers("/api/auth/signup").permitAll()
