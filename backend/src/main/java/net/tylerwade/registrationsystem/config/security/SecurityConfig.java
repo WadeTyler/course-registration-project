@@ -21,11 +21,13 @@ public class SecurityConfig {
 
     private final JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter;
     private final JwtAuthenticationConverter jwtAuthenticationConverter;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Autowired
-    public SecurityConfig(JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter, JwtAuthenticationConverter jwtAuthenticationConverter) {
+    public SecurityConfig(JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter, JwtAuthenticationConverter jwtAuthenticationConverter, CustomAccessDeniedHandler customAccessDeniedHandler) {
         this.jwtCookieToAuthorizationFilter = jwtCookieToAuthorizationFilter;
         this.jwtAuthenticationConverter = jwtAuthenticationConverter;
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 
     @Bean
@@ -57,6 +59,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .httpBasic(basic -> basic
                         .authenticationEntryPoint(new NoPopupBasicAuthEntryPoint())
