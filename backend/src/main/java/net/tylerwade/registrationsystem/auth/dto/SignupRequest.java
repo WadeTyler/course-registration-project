@@ -3,7 +3,9 @@ package net.tylerwade.registrationsystem.auth.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import net.tylerwade.registrationsystem.auth.validation.PasswordsMatch;
 
+@PasswordsMatch
 public record SignupRequest(
         @NotBlank(message = "Email is required.")
         @Size(min = 3, max = 255, message = "Email must be between 3 - 255 characters.")

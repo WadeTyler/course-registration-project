@@ -53,12 +53,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User signup(SignupRequest signupRequest) throws HttpRequestException {
-        // Check passwords match
-        if (!signupRequest.password().equals(signupRequest.confirmPassword())) {
-            throw new HttpRequestException(HttpStatus.BAD_REQUEST, "Passwords must match.");
-        }
-
-
         // Check if user already exists
         if (this.userRepository.existsByUsernameIgnoreCase(signupRequest.username())) {
             throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE, "Email already exists.");
