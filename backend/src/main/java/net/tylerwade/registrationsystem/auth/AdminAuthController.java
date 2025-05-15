@@ -26,7 +26,11 @@ public class AdminAuthController {
     public ResponseEntity<?> getAllUsers(Pageable pageable,
                                          @RequestParam(required = false) String search) {
         Page<UserDTO> page = userService.findAll(pageable, search).map(User::toDTO);
-        PageResponse<UserDTO> pageResponse = new PageResponse<>(page.getContent(), page.getPageable().getPageNumber(), page.getPageable().getPageSize(), page.getTotalElements(), page.getTotalPages());
+        PageResponse<UserDTO> pageResponse = new PageResponse<>(page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages());
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(true, "Users retrieved.", pageResponse));
     }
 
