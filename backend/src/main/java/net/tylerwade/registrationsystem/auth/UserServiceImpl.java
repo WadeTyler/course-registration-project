@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(signupRequest.firstName());
         user.setLastName(signupRequest.lastName());
         user.setPassword(passwordEncoder.encode(signupRequest.password())); // Encode Password
-        user.setGrantedAuthorities(STUDENT.getGrantedAuthorities());    // Set student role
+        user.setGrantedAuthorities(STUDENT.getGrantedAuthoritiesString());    // Set student role
 
         // Save and return
         userRepository.save(user);
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
         // If updating role
         if (updateUserRequest.role() != null) {
             UserRole newRole = updateUserRequest.role();
-            targetUser.setGrantedAuthorities(newRole.getGrantedAuthorities());
+            targetUser.setGrantedAuthorities(newRole.getGrantedAuthoritiesString());
         }
 
         // Save and return
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsernameIgnoreCase("admin@email.com")) return;
 
         // Create default admin
-        User admin = new User("admin@email.com", "admin", "admin", passwordEncoder.encode("admin123"), UserRole.ADMIN.getGrantedAuthorities());
+        User admin = new User("admin@email.com", "admin", "admin", passwordEncoder.encode("admin123"), UserRole.ADMIN.getGrantedAuthoritiesString());
 
         userRepository.save(admin);
     }

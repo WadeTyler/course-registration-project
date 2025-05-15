@@ -29,4 +29,13 @@ public enum UserRole {
         permissions.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return permissions;
     }
+
+    public Set<String> getGrantedAuthoritiesString() {
+        Set<String> permissions = getPermissions().stream()
+                .map(permission -> permission.getPermission())
+                .collect(Collectors.toSet());
+
+        permissions.add("ROLE_" + this.name());
+        return permissions;
+    }
 }

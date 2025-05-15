@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -39,12 +39,18 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
-    private Set<? extends GrantedAuthority> grantedAuthorities;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "authority")
+    private Set<String> grantedAuthorities;
 
     @Column(nullable = false)
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
-    public User(String username, String firstName, String lastName, String password, Set<? extends GrantedAuthority> grantedAuthorities) {
+    @org.springframework.data.annotation.Version
+    private Long version;
+
+    public User(String username, String firstName, String lastName, String password, Set<String> grantedAuthorities) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -56,7 +62,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return grantedAuthorities;
+        return grantedAuthorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
     }
 
     @Override
