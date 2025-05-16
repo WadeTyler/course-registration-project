@@ -23,6 +23,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,6 +59,7 @@ class StudentCourseControllerTests {
                 .title("Intro to CS")
                 .description("Description")
                 .credits(3)
+                .prerequisites(new ArrayList<>())
                 .createdAt(Instant.now())
                 .modifiedAt(Instant.now())
                 .build();

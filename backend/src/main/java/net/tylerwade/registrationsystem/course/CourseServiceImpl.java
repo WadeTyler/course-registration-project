@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,6 +55,7 @@ public class CourseServiceImpl implements CourseService {
                 .title(manageCourseRequest.title())
                 .description(manageCourseRequest.description())
                 .credits(manageCourseRequest.credits())
+                .prerequisites(new ArrayList<>())
                 .build();
 
         // Save and return

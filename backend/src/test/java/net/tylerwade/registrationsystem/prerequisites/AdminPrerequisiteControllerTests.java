@@ -1,10 +1,11 @@
-package net.tylerwade.registrationsystem.course;
+package net.tylerwade.registrationsystem.prerequisites;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.tylerwade.registrationsystem.auth.AuthTestsUtil;
 import net.tylerwade.registrationsystem.config.security.SecurityConfig;
-import net.tylerwade.registrationsystem.course.dto.ManageCourseRequest;
+import net.tylerwade.registrationsystem.course.Course;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
+import net.tylerwade.registrationsystem.prerequisites.dto.ManagePrerequisiteRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,20 +36,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import({SecurityConfig.class, AuthTestsUtil.class})
 @ActiveProfiles("test")
-class AdminCourseControllerTests {
+class AdminPrerequisiteControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
-    private CourseService courseService;
+    private PrerequisiteService prerequisiteService;
 
+    private Prerequisite prerequisite;
     private Course course;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private Course requiredCourse;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
         course = Course.builder()
+                .id(2L)
+                .department("CMSC")
+                .code("115")
+                .title("Data Structures")
+                .description("Description")
+                .prerequisites(new ArrayList<>())
+                .credits(3)
+                .createdAt(Instant.now())
+                .modifiedAt(Instant.now())
+                .build();
+
+        requiredCourse = Course.builder()
                 .id(1L)
                 .department("CMSC")
                 .code("101")
@@ -59,44 +74,54 @@ class AdminCourseControllerTests {
                 .createdAt(Instant.now())
                 .modifiedAt(Instant.now())
                 .build();
+
+        prerequisite = Prerequisite.builder()
+                .id(1L)
+                .minimumGrade('C')
+                .course(course)
+                .requiredCourse(requiredCourse)
+                .createdAt(Instant.now())
+                .modifiedAt(Instant.now())
+                .build();
     }
 
     @Test
     @DisplayName("Should reject unauthenticated users")
     void shouldRejectUnauthenticatedUsers() throws Exception {
-        ManageCourseRequest req = new ManageCourseRequest("CMSC", "101", "Intro to CS", "Description", 3);
-        mockMvc.perform(post("/api/admin/courses")
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'C');
+        mockMvc.perform(post("/api/admin/courses/2/prerequisites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @DisplayName("Should allow users with 'course:write' and 'ROLE_ADMIN' authority to create course")
+    @DisplayName("Should allow users with 'course:write' and 'ROLE_ADMIN' authority to create prerequisite")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
-    void shouldAllowUsersWithCourseWriteAuthorityToCreateCourse() throws Exception {
-        ManageCourseRequest req = new ManageCourseRequest("CMSC", "101", "Intro to CS", "Description", 3);
-        when(courseService.create(any(ManageCourseRequest.class))).thenReturn(course);
+    void shouldAllowUsersWithCourseWriteAuthorityToCreatePrerequisite() throws Exception {
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'C');
+        when(prerequisiteService.create(anyLong(), any(ManagePrerequisiteRequest.class))).thenReturn(prerequisite);
 
-        mockMvc.perform(post("/api/admin/courses")
+        mockMvc.perform(post("/api/admin/courses/2/prerequisites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.isSuccess", is(true)))
-                .andExpect(jsonPath("$.message", is("Course Created.")))
+                .andExpect(jsonPath("$.message", is("Prerequisite created.")))
                 .andExpect(jsonPath("$.data.id", is(1)))
-                .andExpect(jsonPath("$.data.title", is("Intro to CS")));
+                .andExpect(jsonPath("$.data.requiredCourseDepartment", is("CMSC")))
+                .andExpect(jsonPath("$.data.minimumGrade", is("C")));
     }
 
     @Test
     @DisplayName("Should return BAD_REQUEST when create fails validation")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
     void shouldReturnBadRequestWhenCreateFailsValidation() throws Exception {
-        ManageCourseRequest req = new ManageCourseRequest("", "101", "Intro to CS", "Description", 3);
-        when(courseService.create(any(ManageCourseRequest.class)))
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(null, null);
+        when(prerequisiteService.create(anyLong(), any(ManagePrerequisiteRequest.class)))
                 .thenThrow(new HttpRequestException(HttpStatus.BAD_REQUEST, "Fields not valid."));
 
-        mockMvc.perform(post("/api/admin/courses")
+        mockMvc.perform(post("/api/admin/courses/2/prerequisites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isBadRequest())
@@ -104,72 +129,80 @@ class AdminCourseControllerTests {
     }
 
     @Test
-    @DisplayName("Should allow users with 'course:write' and 'ROLE_ADMIN' authority to update course")
+    @DisplayName("Should allow users with 'course:write' and 'ROLE_ADMIN' authority to update prerequisite")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
-    void shouldAllowUsersWithCourseWriteAuthorityToUpdateCourse() throws Exception {
-        ManageCourseRequest req = new ManageCourseRequest("CMSC", "101", "Intro to CS", "Description", 3);
-        when(courseService.update(anyLong(), any(ManageCourseRequest.class))).thenReturn(course);
+    void shouldAllowUsersWithCourseWriteAuthorityToUpdatePrerequisite() throws Exception {
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'B');
+        Prerequisite updatedPrerequisite = Prerequisite.builder()
+                .id(1L)
+                .minimumGrade('B')
+                .course(course)
+                .requiredCourse(requiredCourse)
+                .createdAt(Instant.now())
+                .modifiedAt(Instant.now())
+                .build();
+        when(prerequisiteService.update(anyLong(), anyLong(), any(ManagePrerequisiteRequest.class))).thenReturn(updatedPrerequisite);
 
-        mockMvc.perform(put("/api/admin/courses/1")
+        mockMvc.perform(put("/api/admin/courses/2/prerequisites/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.isSuccess", is(true)))
-                .andExpect(jsonPath("$.message", is("Course updated.")))
+                .andExpect(jsonPath("$.message", is("Prerequisite updated.")))
                 .andExpect(jsonPath("$.data.id", is(1)))
-                .andExpect(jsonPath("$.data.title", is("Intro to CS")));
+                .andExpect(jsonPath("$.data.minimumGrade", is("B")));
     }
 
     @Test
-    @DisplayName("Should return NOT_FOUND when updating non-existent course")
+    @DisplayName("Should return NOT_FOUND when updating non-existent prerequisite")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
-    void shouldReturnNotFoundWhenUpdatingNonExistentCourse() throws Exception {
-        ManageCourseRequest req = new ManageCourseRequest("CMSC", "101", "Intro to CS", "Description", 3);
-        when(courseService.update(anyLong(), any(ManageCourseRequest.class)))
-                .thenThrow(new HttpRequestException(HttpStatus.NOT_FOUND, "Course not found."));
+    void shouldReturnNotFoundWhenUpdatingNonExistentPrerequisite() throws Exception {
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'C');
+        when(prerequisiteService.update(anyLong(), anyLong(), any(ManagePrerequisiteRequest.class)))
+                .thenThrow(new HttpRequestException(HttpStatus.NOT_FOUND, "Prerequisite not found."));
 
-        mockMvc.perform(put("/api/admin/courses/999")
+        mockMvc.perform(put("/api/admin/courses/2/prerequisites/999")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.isSuccess", is(false)))
-                .andExpect(jsonPath("$.message", is("Course not found.")));
+                .andExpect(jsonPath("$.message", is("Prerequisite not found.")));
     }
 
     @Test
-    @DisplayName("Should allow users with 'course:write' and 'ROLE_ADMIN' authority to delete course")
+    @DisplayName("Should allow users with 'course:write' and 'ROLE_ADMIN' authority to delete prerequisite")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
-    void shouldAllowUsersWithCourseWriteAuthorityToDeleteCourse() throws Exception {
-        doNothing().when(courseService).delete(anyLong());
+    void shouldAllowUsersWithCourseWriteAuthorityToDeletePrerequisite() throws Exception {
+        doNothing().when(prerequisiteService).delete(anyLong());
 
-        mockMvc.perform(delete("/api/admin/courses/1")
+        mockMvc.perform(delete("/api/admin/courses/2/prerequisites/1")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.isSuccess", is(true)))
-                .andExpect(jsonPath("$.message", is("Course deleted.")))
+                .andExpect(jsonPath("$.message", is("Prerequisite deleted.")))
                 .andExpect(jsonPath("$.data").doesNotExist());
     }
 
     @Test
-    @DisplayName("Should return NOT_FOUND when deleting non-existent course")
+    @DisplayName("Should return NOT_FOUND when deleting non-existent prerequisite")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
-    void shouldReturnNotFoundWhenDeletingNonExistentCourse() throws Exception {
-        doNothing().when(courseService).delete(anyLong());
-        org.mockito.Mockito.doThrow(new HttpRequestException(HttpStatus.NOT_FOUND, "Course not found."))
-                .when(courseService).delete(999L);
+    void shouldReturnNotFoundWhenDeletingNonExistentPrerequisite() throws Exception {
+        doNothing().when(prerequisiteService).delete(anyLong());
+        org.mockito.Mockito.doThrow(new HttpRequestException(HttpStatus.NOT_FOUND, "Prerequisite not found."))
+                .when(prerequisiteService).delete(999L);
 
-        mockMvc.perform(delete("/api/admin/courses/999")
+        mockMvc.perform(delete("/api/admin/courses/2/prerequisites/999")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.isSuccess", is(false)))
-                .andExpect(jsonPath("$.message", is("Course not found.")));
+                .andExpect(jsonPath("$.message", is("Prerequisite not found.")));
     }
 
     @Test
     @DisplayName("Should reject users without required authority")
     void shouldRejectUsersWithoutRequiredAuthority() throws Exception {
-        ManageCourseRequest req = new ManageCourseRequest("CMSC", "101", "Intro to CS", "Description", 3);
-        mockMvc.perform(post("/api/admin/courses")
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'C');
+        mockMvc.perform(post("/api/admin/courses/2/prerequisites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isUnauthorized());
