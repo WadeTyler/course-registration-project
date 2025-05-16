@@ -1,0 +1,95 @@
+package net.tylerwade.registrationsystem.coursesection;
+
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import net.tylerwade.registrationsystem.auth.User;
+import net.tylerwade.registrationsystem.course.Course;
+import net.tylerwade.registrationsystem.coursesection.dto.CourseSectionDTO;
+import net.tylerwade.registrationsystem.term.Term;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
+
+@Entity
+@Table(name = "course_sections")
+@EntityListeners(AuditingEntityListener.class)
+@Getter
+@Setter
+@NoArgsConstructor
+@Builder
+public class CourseSection {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "term_id", nullable = false)
+    private Term term;
+
+    @ManyToOne
+    @JoinColumn(name = "instructor_id")
+    private User instructor;
+
+    @Column(nullable = false)
+    private String room;
+
+    @Column(nullable = false)
+    private Integer capacity = 0;
+
+    @Column(nullable = false)
+    private String schedule;
+
+    @Column(nullable = false)
+    private Integer enrolledCount = 0;
+
+    @CreatedDate
+    private Instant createdAt;
+
+    @LastModifiedDate
+    private Instant modifiedAt;
+
+    public CourseSection(Term term, User instructor, String room, Integer capacity, String schedule, Integer enrolledCount) {
+        this.term = term;
+        this.instructor = instructor;
+        this.room = room;
+        this.capacity = capacity;
+        this.schedule = schedule;
+        this.enrolledCount = enrolledCount;
+    }
+
+    public CourseSection(Long id, Course course, Term term, User instructor, String room, Integer capacity, String schedule, Integer enrolledCount, Instant createdAt, Instant modifiedAt) {
+        this.id = id;
+        this.course = course;
+        this.term = term;
+        this.instructor = instructor;
+        this.room = room;
+        this.capacity = capacity;
+        this.schedule = schedule;
+        this.enrolledCount = enrolledCount;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
+
+
+    public CourseSectionDTO toDTO() {
+        return new CourseSectionDTO(id,
+                course.getId(),
+                term.toDTO(),
+                instructor != null ? instructor.toDTO() : null,
+                room,
+                capacity,
+                schedule,
+                enrolledCount
+        );
+    }
+}

@@ -32,10 +32,14 @@ public enum UserRole {
 
     public Set<String> getGrantedAuthoritiesString() {
         Set<String> permissions = getPermissions().stream()
-                .map(permission -> permission.getPermission())
+                .map(UserPermission::getPermission)
                 .collect(Collectors.toSet());
 
         permissions.add("ROLE_" + this.name());
         return permissions;
+    }
+
+    public String getNameWithPrefix() {
+        return "ROLE_" + this.name();
     }
 }

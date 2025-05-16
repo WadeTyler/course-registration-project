@@ -49,7 +49,7 @@ class StudentTermControllerTests {
     private TermService termService;
 
     private Term term;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -78,7 +78,7 @@ class StudentTermControllerTests {
 
     @Test
     @DisplayName("Should allow users with 'term:read' authority")
-    @WithMockUser(authorities = {"term:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldAllowUsersWithTermReadAuthority() throws Exception {
         // Arrange
         List<Term> terms = Collections.singletonList(term);
@@ -93,7 +93,7 @@ class StudentTermControllerTests {
 
     @Test
     @DisplayName("Should allow users with 'STUDENT' role")
-    @WithMockUser(roles = {"STUDENT"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldAllowUsersWithStudentRole() throws Exception {
         // Arrange
         List<Term> terms = Collections.singletonList(term);
@@ -108,7 +108,7 @@ class StudentTermControllerTests {
 
     @Test
     @DisplayName("Should return page of terms")
-    @WithMockUser(authorities = {"term:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnPageOfTerms() throws Exception {
         // Arrange
         List<Term> terms = Collections.singletonList(term);
@@ -131,7 +131,7 @@ class StudentTermControllerTests {
 
     @Test
     @DisplayName("Should return term by ID")
-    @WithMockUser(authorities = {"term:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnTermById() throws Exception {
         // Arrange
         when(termService.findById(anyLong())).thenReturn(term);
@@ -149,7 +149,7 @@ class StudentTermControllerTests {
 
     @Test
     @DisplayName("Should return NOT_FOUND when term doesn't exist")
-    @WithMockUser(authorities = {"term:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnNotFoundWhenTermDoesNotExist() throws Exception {
         // Arrange
         when(termService.findById(anyLong()))
@@ -165,7 +165,7 @@ class StudentTermControllerTests {
 
     @Test
     @DisplayName("Should return empty page when no terms exist")
-    @WithMockUser(authorities = {"term:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnEmptyPageWhenNoTermsExist() throws Exception {
         // Arrange
         Page<Term> emptyPage = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);

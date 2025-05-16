@@ -1,6 +1,5 @@
 package net.tylerwade.registrationsystem.config.security;
 
-import net.tylerwade.registrationsystem.config.security.authorities.UserRole;
 import net.tylerwade.registrationsystem.config.security.jwt.JwtCookieToAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +12,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static net.tylerwade.registrationsystem.config.security.authorities.UserRole.*;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -46,8 +46,14 @@ public class SecurityConfig {
                         // Public Routes
                         .requestMatchers("/api/auth/signup").permitAll()
 
+                        // Student Routes
+                        .requestMatchers("/api/student/**").hasAnyRole(STUDENT.name(), INSTRUCTOR.name(), ADMIN.name())
+
+                        // Instructor Routes
+                        .requestMatchers("/api/instructor/**").hasAnyRole(ADMIN.name(), INSTRUCTOR.name())
+
                         // Admin Routes
-                        .requestMatchers("/api/admin/**").hasRole(UserRole.ADMIN.name())
+                        .requestMatchers("/api/admin/**").hasRole(ADMIN.name())
 
                         // All Routes
                         .anyRequest().authenticated()

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.tylerwade.registrationsystem.course.dto.CourseDTO;
+import net.tylerwade.registrationsystem.coursesection.CourseSection;
 import net.tylerwade.registrationsystem.prerequisites.Prerequisite;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -51,6 +52,9 @@ public class Course {
     @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Prerequisite> prerequisites = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<CourseSection> courseSections = new ArrayList<>();
+
     @CreatedDate
     private Instant createdAt;
 
@@ -65,7 +69,7 @@ public class Course {
         this.credits = credits;
     }
 
-    public Course(Long id, String department, String code, String title, String description, Integer credits, List<Prerequisite> prerequisites, Instant createdAt, Instant modifiedAt) {
+    public Course(Long id, String department, String code, String title, String description, Integer credits, List<Prerequisite> prerequisites, List<CourseSection> courseSections, Instant createdAt, Instant modifiedAt) {
         this.id = id;
         this.department = department;
         this.code = code;
@@ -73,11 +77,12 @@ public class Course {
         this.description = description;
         this.credits = credits;
         this.prerequisites = prerequisites;
+        this.courseSections = courseSections;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
 
-    CourseDTO toDTO() {
+    public CourseDTO toDTO() {
         return new CourseDTO(id,
                 department,
                 code,
@@ -85,6 +90,7 @@ public class Course {
                 description,
                 credits,
                 prerequisites.stream().map(Prerequisite::toDTO).toList(),
+                courseSections.stream().map(CourseSection::toDTO).toList(),
                 createdAt,
                 modifiedAt);
     }

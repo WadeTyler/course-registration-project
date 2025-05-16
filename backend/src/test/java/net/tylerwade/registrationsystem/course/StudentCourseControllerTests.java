@@ -48,7 +48,7 @@ class StudentCourseControllerTests {
     private CourseService courseService;
 
     private Course course;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -60,6 +60,7 @@ class StudentCourseControllerTests {
                 .description("Description")
                 .credits(3)
                 .prerequisites(new ArrayList<>())
+                .courseSections(new ArrayList<>())
                 .createdAt(Instant.now())
                 .modifiedAt(Instant.now())
                 .build();
@@ -75,7 +76,7 @@ class StudentCourseControllerTests {
 
     @Test
     @DisplayName("Should return page of courses")
-    @WithMockUser(authorities = {"course:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnPageOfCourses() throws Exception {
         List<Course> courses = Collections.singletonList(course);
         Page<Course> coursePage = new PageImpl<>(courses, PageRequest.of(0, 10), courses.size());
@@ -96,7 +97,7 @@ class StudentCourseControllerTests {
 
     @Test
     @DisplayName("Should return course by ID")
-    @WithMockUser(authorities = {"course:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnCourseById() throws Exception {
         when(courseService.findById(anyLong())).thenReturn(course);
 
@@ -112,7 +113,7 @@ class StudentCourseControllerTests {
 
     @Test
     @DisplayName("Should return NOT_FOUND when course doesn't exist")
-    @WithMockUser(authorities = {"course:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnNotFoundWhenCourseDoesNotExist() throws Exception {
         when(courseService.findById(anyLong()))
                 .thenThrow(new HttpRequestException(HttpStatus.NOT_FOUND, "Course not found"));
@@ -126,7 +127,7 @@ class StudentCourseControllerTests {
 
     @Test
     @DisplayName("Should return empty page when no courses exist")
-    @WithMockUser(authorities = {"course:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnEmptyPageWhenNoCoursesExist() throws Exception {
         Page<Course> emptyPage = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
         when(courseService.findAll(any(Pageable.class))).thenReturn(emptyPage);

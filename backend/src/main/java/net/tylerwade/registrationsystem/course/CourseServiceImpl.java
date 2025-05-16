@@ -56,6 +56,7 @@ public class CourseServiceImpl implements CourseService {
                 .description(manageCourseRequest.description())
                 .credits(manageCourseRequest.credits())
                 .prerequisites(new ArrayList<>())
+                .courseSections(new ArrayList<>())
                 .build();
 
         // Save and return

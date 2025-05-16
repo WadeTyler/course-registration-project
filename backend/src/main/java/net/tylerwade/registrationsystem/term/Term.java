@@ -66,7 +66,7 @@ public class Term {
         this.modifiedAt = modifiedAt;
     }
 
-    TermDTO toDTO() {
+    public TermDTO toDTO() {
         return new TermDTO(id,
                 title,
                 startDate,

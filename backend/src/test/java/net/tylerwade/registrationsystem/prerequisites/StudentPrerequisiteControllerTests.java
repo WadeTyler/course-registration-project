@@ -45,7 +45,7 @@ class StudentPrerequisiteControllerTests {
     private Prerequisite prerequisite;
     private Course course;
     private Course requiredCourse;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -94,7 +94,7 @@ class StudentPrerequisiteControllerTests {
 
     @Test
     @DisplayName("Should return list of prerequisites for a course")
-    @WithMockUser(authorities = {"course:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnListOfPrerequisites() throws Exception {
         when(prerequisiteService.findAllByCourseId(anyLong()))
                 .thenReturn(List.of(prerequisite));
@@ -112,7 +112,7 @@ class StudentPrerequisiteControllerTests {
 
     @Test
     @DisplayName("Should return empty list when no prerequisites exist")
-    @WithMockUser(authorities = {"course:read"})
+    @WithMockUser(authorities = {"ROLE_STUDENT"})
     void shouldReturnEmptyListWhenNoPrerequisitesExist() throws Exception {
         when(prerequisiteService.findAllByCourseId(anyLong()))
                 .thenReturn(Collections.emptyList());

@@ -55,6 +55,7 @@ class AdminCourseControllerTests {
                 .title("Intro to CS")
                 .description("Description")
                 .prerequisites(new ArrayList<>())
+                .courseSections(new ArrayList<>())
                 .credits(3)
                 .createdAt(Instant.now())
                 .modifiedAt(Instant.now())
