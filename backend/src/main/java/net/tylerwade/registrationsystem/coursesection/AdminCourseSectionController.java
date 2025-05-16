@@ -33,7 +33,7 @@ public class AdminCourseSectionController {
     public ResponseEntity<APIResponse<CourseSectionDTO>> update(@PathVariable Long sectionId, @Valid @RequestBody ManageCourseSectionRequest manageCourseSectionRequest) throws HttpRequestException {
         CourseSectionDTO courseSection = courseSectionService.update(sectionId, manageCourseSectionRequest).toDTO();
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.success("Course Section updated.", courseSection));
     }
 
