@@ -101,9 +101,31 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsernameIgnoreCase("admin@email.com")) return;
 
         // Create default admin
-        User admin = new User("admin@email.com", "admin", "admin", passwordEncoder.encode("admin123"), UserRole.ADMIN.getGrantedAuthoritiesString());
+        User admin = new User("admin@email.com", "admin", "admin", passwordEncoder.encode("123456"), UserRole.ADMIN.getGrantedAuthoritiesString());
 
         userRepository.save(admin);
+    }
+
+    @Override
+    public void createDefaultInstructor() {
+        // Check if default instructor exists
+        if (userRepository.existsByUsernameIgnoreCase("instructor@email.com")) return;
+
+        // Create default admin
+        User instructor = new User("instructor@email.com", "instructor", "instructor", passwordEncoder.encode("123456"), UserRole.INSTRUCTOR.getGrantedAuthoritiesString());
+
+        userRepository.save(instructor);
+    }
+
+    @Override
+    public void createDefaultStudent() {
+        // Check if default student exists
+        if (userRepository.existsByUsernameIgnoreCase("student@email.com")) return;
+
+        // Create default admin
+        User student = new User("student@email.com", "student", "student", passwordEncoder.encode("123456"), STUDENT.getGrantedAuthoritiesString());
+
+        userRepository.save(student);
     }
 
 }
