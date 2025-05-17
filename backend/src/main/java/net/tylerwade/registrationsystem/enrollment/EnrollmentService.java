@@ -21,7 +21,7 @@ public interface EnrollmentService {
 
     void delete(Long enrollmentId, Authentication authentication) throws HttpRequestException;
 
-
+    int updateStartedEnrollments();
 
 
 

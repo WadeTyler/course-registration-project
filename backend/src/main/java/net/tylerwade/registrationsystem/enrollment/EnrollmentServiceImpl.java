@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 
 @Service
@@ -146,5 +147,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         enrollmentRepository.delete(enrollment);
+    }
+
+    @Override
+    public int updateStartedEnrollments() {
+        List<Enrollment> unupdatedStartedEnrollments = enrollmentRepository.findAllByStatusIsAndCourseSection_Term_StartDateBefore("NOT_STARTED", new Date(System.currentTimeMillis()));
+        unupdatedStartedEnrollments.forEach(enrollment -> enrollment.setStatus("STARTED"));
+        enrollmentRepository.saveAll(unupdatedStartedEnrollments);
+
+        return unupdatedStartedEnrollments.size();
     }
 }
