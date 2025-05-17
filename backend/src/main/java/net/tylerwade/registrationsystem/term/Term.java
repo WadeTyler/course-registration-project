@@ -76,4 +76,14 @@ public class Term {
                 createdAt,
                 modifiedAt);
     }
+
+    public boolean isRegistrationOpen() {
+        Date now = new Date(System.currentTimeMillis());
+        return (registrationStart.before(now) || registrationStart.equals(now)) && (registrationEnd.after(now) || registrationEnd.equals(now));
+    }
+
+    public boolean hasEnded() {
+        Date now = new Date(System.currentTimeMillis());
+        return now.after(endDate);
+    }
 }

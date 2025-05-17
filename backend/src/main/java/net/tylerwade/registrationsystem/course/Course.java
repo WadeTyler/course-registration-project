@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.tylerwade.registrationsystem.course.dto.CourseAttributeDTO;
 import net.tylerwade.registrationsystem.course.dto.CourseDTO;
 import net.tylerwade.registrationsystem.coursesection.CourseSection;
 import net.tylerwade.registrationsystem.prerequisites.Prerequisite;
@@ -93,6 +94,17 @@ public class Course {
                 courseSections.stream().map(CourseSection::toDTO).toList(),
                 createdAt,
                 modifiedAt);
+    }
+
+    public CourseAttributeDTO toAttributeDTO() {
+        return new CourseAttributeDTO(
+                id,
+                department,
+                code,
+                title,
+                description,
+                credits
+        );
     }
 
 }

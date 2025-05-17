@@ -76,7 +76,7 @@ class StudentPrerequisiteControllerTests {
         // Mock Prerequisite and its DTO
         prerequisite = Prerequisite.builder()
                 .id(1L)
-                .minimumGrade('C')
+                .minimumGrade(70)
                 .course(course)
                 .requiredCourse(requiredCourse)
                 .createdAt(Instant.now())
@@ -107,7 +107,7 @@ class StudentPrerequisiteControllerTests {
                 .andExpect(jsonPath("$.data", hasSize(1)))
                 .andExpect(jsonPath("$.data[0].id", is(1)))
                 .andExpect(jsonPath("$.data[0].requiredCourseDepartment", is("CMSC")))
-                .andExpect(jsonPath("$.data[0].minimumGrade", is("C")));
+                .andExpect(jsonPath("$.data[0].minimumGrade", is(70)));
     }
 
     @Test

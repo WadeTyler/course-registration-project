@@ -39,7 +39,7 @@ public class Prerequisite {
     private Course requiredCourse;
 
     @Column(nullable = false)
-    private Character minimumGrade;
+    private Integer minimumGrade;
 
     @CreatedDate
     private Instant createdAt;
@@ -47,13 +47,13 @@ public class Prerequisite {
     @LastModifiedDate
     private Instant modifiedAt;
 
-    public Prerequisite(Course course, Course requiredCourse, Character minimumGrade) {
+    public Prerequisite(Course course, Course requiredCourse, Integer minimumGrade) {
         this.course = course;
         this.requiredCourse = requiredCourse;
         this.minimumGrade = minimumGrade;
     }
 
-    public Prerequisite(Long id, Course course, Course requiredCourse, Character minimumGrade, Instant createdAt, Instant modifiedAt) {
+    public Prerequisite(Long id, Course course, Course requiredCourse, Integer minimumGrade, Instant createdAt, Instant modifiedAt) {
         this.id = id;
         this.course = course;
         this.requiredCourse = requiredCourse;

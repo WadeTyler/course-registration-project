@@ -83,7 +83,6 @@ public class CourseSectionServiceImpl implements CourseSectionService {
                 .room(manageCourseSectionRequest.room())
                 .capacity(manageCourseSectionRequest.capacity())
                 .schedule(manageCourseSectionRequest.schedule())
-                .enrolledCount(0)
                 .build();
 
         // Save and return
@@ -113,7 +112,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
         }
 
         // Check if trying to set capacity lower than current enrolled.
-        if (courseSection.getEnrolledCount() > manageCourseSectionRequest.capacity()) {
+        if (courseSection.getEnrollments().size() > manageCourseSectionRequest.capacity()) {
             throw new HttpRequestException(HttpStatus.CONFLICT, "You cannot set capacity lower than the amount of students already enrolled.");
         }
 

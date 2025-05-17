@@ -1,19 +1,20 @@
 package net.tylerwade.registrationsystem.coursesection;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import net.tylerwade.registrationsystem.auth.User;
 import net.tylerwade.registrationsystem.course.Course;
 import net.tylerwade.registrationsystem.coursesection.dto.CourseSectionDTO;
+import net.tylerwade.registrationsystem.coursesection.dto.InstructorCourseSectionDTO;
+import net.tylerwade.registrationsystem.enrollment.Enrollment;
 import net.tylerwade.registrationsystem.term.Term;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "course_sections")
@@ -21,6 +22,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CourseSection {
 
@@ -40,6 +42,9 @@ public class CourseSection {
     @JoinColumn(name = "instructor_id")
     private User instructor;
 
+    @OneToMany(mappedBy = "courseSection")
+    private List<Enrollment> enrollments = new ArrayList<>();
+
     @Column(nullable = false)
     private String room;
 
@@ -49,25 +54,21 @@ public class CourseSection {
     @Column(nullable = false)
     private String schedule;
 
-    @Column(nullable = false)
-    private Integer enrolledCount = 0;
-
     @CreatedDate
     private Instant createdAt;
 
     @LastModifiedDate
     private Instant modifiedAt;
 
-    public CourseSection(Term term, User instructor, String room, Integer capacity, String schedule, Integer enrolledCount) {
+    public CourseSection(Term term, User instructor, String room, Integer capacity, String schedule) {
         this.term = term;
         this.instructor = instructor;
         this.room = room;
         this.capacity = capacity;
         this.schedule = schedule;
-        this.enrolledCount = enrolledCount;
     }
 
-    public CourseSection(Long id, Course course, Term term, User instructor, String room, Integer capacity, String schedule, Integer enrolledCount, Instant createdAt, Instant modifiedAt) {
+    public CourseSection(Long id, Course course, Term term, User instructor, String room, Integer capacity, String schedule, Instant createdAt, Instant modifiedAt) {
         this.id = id;
         this.course = course;
         this.term = term;
@@ -75,7 +76,6 @@ public class CourseSection {
         this.room = room;
         this.capacity = capacity;
         this.schedule = schedule;
-        this.enrolledCount = enrolledCount;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
@@ -83,13 +83,26 @@ public class CourseSection {
 
     public CourseSectionDTO toDTO() {
         return new CourseSectionDTO(id,
-                course.getId(),
+                course.toAttributeDTO(),
                 term.toDTO(),
                 instructor != null ? instructor.toDTO() : null,
                 room,
                 capacity,
                 schedule,
-                enrolledCount
+                enrollments.size()
         );
+    }
+
+    public InstructorCourseSectionDTO toInstructorDTO() {
+        return new InstructorCourseSectionDTO(
+                id,
+                course.toAttributeDTO(),
+                term.toDTO(),
+                instructor != null ? instructor.toDTO() : null,
+                room,
+                capacity,
+                schedule,
+                enrollments.size(),
+                enrollments.stream().map(Enrollment::toInstructorDTO).toList());
     }
 }

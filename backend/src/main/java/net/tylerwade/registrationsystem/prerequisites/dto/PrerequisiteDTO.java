@@ -8,7 +8,7 @@ public record PrerequisiteDTO(
     Long requiredCourseId,
     String requiredCourseDepartment,
     String requiredCourseCode,
-    Character minimumGrade,
+    Integer minimumGrade,
     Instant createdAt,
     Instant modifiedAt
 ) {

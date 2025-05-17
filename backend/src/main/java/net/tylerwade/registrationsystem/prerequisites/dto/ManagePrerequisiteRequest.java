@@ -1,6 +1,8 @@
 package net.tylerwade.registrationsystem.prerequisites.dto;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public record ManagePrerequisiteRequest(
 
@@ -8,6 +10,8 @@ public record ManagePrerequisiteRequest(
         Long requiredCourseId,
 
         @NotNull(message = "Minimum grade is required.")
-        Character minimumGrade
+        @PositiveOrZero(message = "Minimum Grade must be positive or zero.")
+        @Max(100)
+        Integer minimumGrade
 ) {
 }

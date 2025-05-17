@@ -86,7 +86,7 @@ class StudentCourseSectionControllerTests {
                 .capacity(30)
                 .schedule("MWF 10:00-11:00")
                 .course(course)
-                .enrolledCount(10)
+                .enrollments(new ArrayList<>())
                 .createdAt(Instant.now())
                 .modifiedAt(Instant.now())
                 .build();

@@ -47,7 +47,7 @@ class AdminPrerequisiteControllerTests {
     private Prerequisite prerequisite;
     private Course course;
     private Course requiredCourse;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
@@ -77,7 +77,7 @@ class AdminPrerequisiteControllerTests {
 
         prerequisite = Prerequisite.builder()
                 .id(1L)
-                .minimumGrade('C')
+                .minimumGrade(70)
                 .course(course)
                 .requiredCourse(requiredCourse)
                 .createdAt(Instant.now())
@@ -88,7 +88,7 @@ class AdminPrerequisiteControllerTests {
     @Test
     @DisplayName("Should reject unauthenticated users")
     void shouldRejectUnauthenticatedUsers() throws Exception {
-        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'C');
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 70);
         mockMvc.perform(post("/api/admin/courses/2/prerequisites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
@@ -99,7 +99,7 @@ class AdminPrerequisiteControllerTests {
     @DisplayName("Should allow users with 'course:write' and 'ROLE_ADMIN' authority to create prerequisite")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
     void shouldAllowUsersWithCourseWriteAuthorityToCreatePrerequisite() throws Exception {
-        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'C');
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 70);
         when(prerequisiteService.create(anyLong(), any(ManagePrerequisiteRequest.class))).thenReturn(prerequisite);
 
         mockMvc.perform(post("/api/admin/courses/2/prerequisites")
@@ -110,7 +110,7 @@ class AdminPrerequisiteControllerTests {
                 .andExpect(jsonPath("$.message", is("Prerequisite created.")))
                 .andExpect(jsonPath("$.data.id", is(1)))
                 .andExpect(jsonPath("$.data.requiredCourseDepartment", is("CMSC")))
-                .andExpect(jsonPath("$.data.minimumGrade", is("C")));
+                .andExpect(jsonPath("$.data.minimumGrade", is(70)));
     }
 
     @Test
@@ -132,10 +132,10 @@ class AdminPrerequisiteControllerTests {
     @DisplayName("Should allow users with 'course:write' and 'ROLE_ADMIN' authority to update prerequisite")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
     void shouldAllowUsersWithCourseWriteAuthorityToUpdatePrerequisite() throws Exception {
-        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'B');
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 80);
         Prerequisite updatedPrerequisite = Prerequisite.builder()
                 .id(1L)
-                .minimumGrade('B')
+                .minimumGrade(80)
                 .course(course)
                 .requiredCourse(requiredCourse)
                 .createdAt(Instant.now())
@@ -150,14 +150,14 @@ class AdminPrerequisiteControllerTests {
                 .andExpect(jsonPath("$.isSuccess", is(true)))
                 .andExpect(jsonPath("$.message", is("Prerequisite updated.")))
                 .andExpect(jsonPath("$.data.id", is(1)))
-                .andExpect(jsonPath("$.data.minimumGrade", is("B")));
+                .andExpect(jsonPath("$.data.minimumGrade", is(80)));
     }
 
     @Test
     @DisplayName("Should return NOT_FOUND when updating non-existent prerequisite")
     @WithMockUser(authorities = {"course:write", "ROLE_ADMIN"})
     void shouldReturnNotFoundWhenUpdatingNonExistentPrerequisite() throws Exception {
-        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'C');
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 70);
         when(prerequisiteService.update(anyLong(), anyLong(), any(ManagePrerequisiteRequest.class)))
                 .thenThrow(new HttpRequestException(HttpStatus.NOT_FOUND, "Prerequisite not found."));
 
@@ -201,7 +201,7 @@ class AdminPrerequisiteControllerTests {
     @Test
     @DisplayName("Should reject users without required authority")
     void shouldRejectUsersWithoutRequiredAuthority() throws Exception {
-        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 'C');
+        ManagePrerequisiteRequest req = new ManagePrerequisiteRequest(1L, 70);
         mockMvc.perform(post("/api/admin/courses/2/prerequisites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
