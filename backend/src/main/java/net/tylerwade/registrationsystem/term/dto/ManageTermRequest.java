@@ -1,17 +1,11 @@
 package net.tylerwade.registrationsystem.term.dto;
 
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
-import java.sql.Date;
+import java.util.Date;
 
 public record ManageTermRequest(
-        @NotBlank(message = "Term title is required.")
-        @Size(min = 3, max = 50, message = "Title must be between 3 - 50 characters.")
-        String title,
-
         @NotNull(message = "Term start date is required")
         @FutureOrPresent(message = "Term start date must be today or in the future")
         Date startDate,
@@ -28,9 +22,7 @@ public record ManageTermRequest(
 ) {
 
     public boolean isValid() {
-        return title != null
-                && !title.isBlank()
-                && startDate != null
+        return startDate != null
                 && endDate != null
                 && registrationStart != null
                 && registrationEnd != null

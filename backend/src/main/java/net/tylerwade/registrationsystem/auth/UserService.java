@@ -23,7 +23,7 @@ public interface UserService extends UserDetailsService {
      * @return The user entity.
      * @throws HttpRequestException If the user is not found.
      */
-    User findById(String userId) throws HttpRequestException;
+    User findById(Long userId) throws HttpRequestException;
 
     /**
      * Retrieves a paginated list of all users in the system.
@@ -78,7 +78,7 @@ public interface UserService extends UserDetailsService {
      * @param authentication the authentication context of the administrator performing the update
      * @return the updated User object
      */
-    User updateUserAsAdmin(String userId, UpdateUserRequest updateUserRequest, Authentication authentication) throws HttpRequestException;
+    User updateUserAsAdmin(Long userId, UpdateUserRequest updateUserRequest, Authentication authentication) throws HttpRequestException;
 
     /**
      * Creates a default admin user in the system if one does not already exist.

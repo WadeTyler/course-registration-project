@@ -28,7 +28,7 @@ public interface EnrollmentService {
      * @param studentId the student ID
      * @return list of enrollments
      */
-    List<Enrollment> findAllByStudent(String studentId);
+    List<Enrollment> findAllByStudent(Long studentId);
 
     /**
      * Creates a new enrollment for the authenticated student.

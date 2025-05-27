@@ -10,7 +10,7 @@ public record ManageCourseSectionRequest(
         @NotNull(message = "Term ID is required.")
         Long termId,
 
-        String instructorId,
+        Long instructorId,
 
         @NotBlank(message = "Room is required.")
         @Size(max = 255, message = "Room must be less than 255 characters.")

@@ -35,7 +35,7 @@ public class AdminAuthController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUser(Authentication authentication, @PathVariable String userId, @RequestBody UpdateUserRequest updateUserRequest) throws HttpRequestException {
+    public ResponseEntity<?> updateUser(Authentication authentication, @PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) throws HttpRequestException {
         UserDTO updatedUser = userService.updateUserAsAdmin(userId, updateUserRequest, authentication).toDTO();
         return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(true, "User updated.", updatedUser));
     }

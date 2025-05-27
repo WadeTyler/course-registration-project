@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface CourseSectionRepository extends JpaRepository<CourseSection, Long> {
     List<CourseSection> findAllByCourse_Id(Long courseId);
 
-    List<CourseSection> findAllByInstructor_Id(String instructorId);
+    List<CourseSection> findAllByInstructor_Id(Long instructorId);
 
-    Optional<CourseSection> findByIdAndInstructor_Id(Long id, String instructorId);
+    Optional<CourseSection> findByIdAndInstructor_Id(Long id, Long instructorId);
 }

@@ -2,19 +2,16 @@ package net.tylerwade.registrationsystem.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import net.tylerwade.registrationsystem.auth.dto.UserDTO;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,12 +20,14 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String username;
@@ -49,18 +48,7 @@ public class User implements UserDetails {
     private Set<String> grantedAuthorities;
 
     @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant modifiedAt;
-
-    public User(String username, String firstName, String lastName, String password, Set<String> grantedAuthorities) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.grantedAuthorities = grantedAuthorities;
-    }
+    private Date createdAt;
 
     // --- UserDetail Functions ---
 
@@ -109,7 +97,6 @@ public class User implements UserDetails {
                 firstName,
                 lastName,
                 grantedAuthorities,
-                createdAt,
-                modifiedAt);
+                createdAt);
     }
 }

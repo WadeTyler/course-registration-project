@@ -14,11 +14,11 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     List<Course> findAllByDepartmentIgnoreCase(String department);
 
-    Course findByDepartmentIgnoreCaseAndCodeIgnoreCase(String department, String code);
+    Course findByDepartmentIgnoreCaseAndCode(String department, Integer code);
 
-    boolean existsByDepartmentIgnoreCaseAndCodeIgnoreCase(String department, String code);
+    boolean existsByDepartmentIgnoreCaseAndCode(String department, Integer code);
 
-    boolean existsByDepartmentIgnoreCaseAndCodeIgnoreCaseAndIdNot(String department, String code, Long id);
+    boolean existsByDepartmentIgnoreCaseAndCodeAndIdNot(String department, Integer code, Long id);
 
     boolean existsByTitleIgnoreCase(String title);
 

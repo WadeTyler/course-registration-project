@@ -5,6 +5,7 @@ import net.tylerwade.registrationsystem.course.dto.CourseAttributeDTO;
 import net.tylerwade.registrationsystem.enrollment.dto.InstructorEnrollmentDTO;
 import net.tylerwade.registrationsystem.term.dto.TermDTO;
 
+import java.util.Date;
 import java.util.List;
 
 public record InstructorCourseSectionDTO(
@@ -16,6 +17,7 @@ public record InstructorCourseSectionDTO(
         Integer capacity,
         String schedule,
         Integer enrolledCount,
-        List<InstructorEnrollmentDTO> enrollments
+        List<InstructorEnrollmentDTO> enrollments,
+        Date createdAt
 ) {
 }

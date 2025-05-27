@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.math.BigDecimal;
+
 public record ManagePrerequisiteRequest(
 
         @NotNull(message = "Required course Id is required.")
@@ -12,6 +14,6 @@ public record ManagePrerequisiteRequest(
         @NotNull(message = "Minimum grade is required.")
         @PositiveOrZero(message = "Minimum Grade must be positive or zero.")
         @Max(100)
-        Integer minimumGrade
+        BigDecimal minimumGrade
 ) {
 }

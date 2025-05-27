@@ -41,7 +41,6 @@ public class TermServiceImpl implements TermService{
 
         // Create term
         Term term = Term.builder()
-                .title(manageTermRequest.title())
                 .startDate(manageTermRequest.startDate())
                 .endDate(manageTermRequest.endDate())
                 .registrationStart(manageTermRequest.registrationStart())
@@ -67,7 +66,6 @@ public class TermServiceImpl implements TermService{
         }
 
         // Update term
-        term.setTitle(manageTermRequest.title());
         term.setStartDate(manageTermRequest.startDate());
         term.setEndDate(manageTermRequest.endDate());
         term.setRegistrationStart(manageTermRequest.registrationStart());

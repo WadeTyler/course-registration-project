@@ -1,18 +1,15 @@
 package net.tylerwade.registrationsystem.course.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record ManageCourseRequest(
         @NotBlank(message = "Department is required.")
         @Size(max = 10, message = "Department must be at most 10 characters.")
         String department,
 
-        @NotBlank(message = "Code is required.")
-        @Size(max = 10, message = "Code must be at most 10 characters.")
-        String code,
+        @NotNull(message = "Code is required.")
+        @PositiveOrZero(message = "Code must be positive or zero.")
+        Integer code,
 
         @NotBlank(message = "Title is required.")
         @Size(max = 100, message = "Title must be at most 100 characters.")

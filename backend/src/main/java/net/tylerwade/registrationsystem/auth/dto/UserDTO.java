@@ -1,7 +1,7 @@
 package net.tylerwade.registrationsystem.auth.dto;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.Set;
 
-public record UserDTO(String id, String username, String firstName, String lastName, Set<String> grantedAuthorities, Instant createdAt, Instant modifiedAt) {
+public record UserDTO(Long id, String username, String firstName, String lastName, Set<String> grantedAuthorities, Date createdAt) {
 }

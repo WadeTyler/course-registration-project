@@ -2,16 +2,16 @@ package net.tylerwade.registrationsystem.enrollment.dto;
 
 import net.tylerwade.registrationsystem.auth.dto.UserDTO;
 
-import java.time.Instant;
+import java.math.BigDecimal;
+import java.util.Date;
 
 public record InstructorEnrollmentDTO(
         Long id,
         UserDTO student,
         Long courseSectionId,
-        Integer grade,
+        BigDecimal grade,
         String status,
-        Instant createdAt,
-        Instant modifiedAt
+        Date createdAt
 ) {
 
 }

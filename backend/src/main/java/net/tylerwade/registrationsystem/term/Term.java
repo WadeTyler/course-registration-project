@@ -1,33 +1,26 @@
 package net.tylerwade.registrationsystem.term;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import net.tylerwade.registrationsystem.term.dto.TermDTO;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.sql.Date;
-import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Table(name = "terms")
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 public class Term {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String title;
 
     @Column(nullable = false)
     private Date startDate;
@@ -42,39 +35,15 @@ public class Term {
     private Date registrationEnd;
 
     @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant modifiedAt;
-
-    public Term(String title, Date startDate, Date endDate, Date registrationStart, Date registrationEnd) {
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.registrationStart = registrationStart;
-        this.registrationEnd = registrationEnd;
-    }
-
-    public Term(Long id, String title, Date startDate, Date endDate, Date registrationStart, Date registrationEnd, Instant createdAt, Instant modifiedAt) {
-        this.id = id;
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.registrationStart = registrationStart;
-        this.registrationEnd = registrationEnd;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-    }
+    private Date createdAt;
 
     public TermDTO toDTO() {
         return new TermDTO(id,
-                title,
                 startDate,
                 endDate,
                 registrationStart,
                 registrationEnd,
-                createdAt,
-                modifiedAt);
+                createdAt);
     }
 
     public boolean isRegistrationOpen() {

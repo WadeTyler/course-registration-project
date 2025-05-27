@@ -39,7 +39,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course create(ManageCourseRequest manageCourseRequest) throws HttpRequestException {
         // Check if course exists with department and code already
-        if (courseRepository.existsByDepartmentIgnoreCaseAndCodeIgnoreCase(manageCourseRequest.department(), manageCourseRequest.code())) {
+        if (courseRepository.existsByDepartmentIgnoreCaseAndCode(manageCourseRequest.department(), manageCourseRequest.code())) {
             throw new HttpRequestException(HttpStatus.CONFLICT, "A Course already exists with department and code.");
         }
 
@@ -69,7 +69,7 @@ public class CourseServiceImpl implements CourseService {
         Course course = findById(courseId);
 
         // Check if course exists with department and code already and is not target course.
-        if (courseRepository.existsByDepartmentIgnoreCaseAndCodeIgnoreCaseAndIdNot(manageCourseRequest.department(), manageCourseRequest.code(), courseId)) {
+        if (courseRepository.existsByDepartmentIgnoreCaseAndCodeAndIdNot(manageCourseRequest.department(), manageCourseRequest.code(), courseId)) {
             throw new HttpRequestException(HttpStatus.CONFLICT, "A Course already exists with department and code.");
         }
 

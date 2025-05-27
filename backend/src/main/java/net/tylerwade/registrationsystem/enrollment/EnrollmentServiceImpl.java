@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
@@ -31,12 +32,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<Enrollment> findAllByStudent(Authentication authentication) {
-        String userId = userService.getUser(authentication).getId();
+        Long userId = userService.getUser(authentication).getId();
         return enrollmentRepository.findAllByStudent_IdOrderByCourseSection_Term_StartDateDesc(userId);
     }
 
     @Override
-    public List<Enrollment> findAllByStudent(String studentId) {
+    public List<Enrollment> findAllByStudent(Long studentId) {
         return enrollmentRepository.findAllByStudent_IdOrderByCourseSection_Term_StartDateDesc(studentId);
     }
 
@@ -85,7 +86,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 }
 
                 // Check if Grade passed
-                if (completedEnrollment.getGrade() < prerequisite.getMinimumGrade()) {
+                if (completedEnrollment.getGrade().compareTo(prerequisite.getMinimumGrade()) < 0) {
                     throw new RuntimeException();
                 }
             }
@@ -97,12 +98,18 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment enrollment = Enrollment.builder()
                 .student(student)
                 .courseSection(courseSection)
-                .grade(0)
+                .grade(new BigDecimal(0))
                 .status("NOT_STARTED")
                 .build();
 
+
         // Save and return
-        return enrollmentRepository.save(enrollment);
+        enrollmentRepository.save(enrollment);
+
+        // Update enrolledCount
+        courseSectionService.refreshEnrollmentCount(courseSection.getId());
+
+        return enrollment;
     }
 
     @Override
@@ -146,6 +153,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE, "You have already completed this course.");
         }
 
+        courseSectionService.refreshEnrollmentCount(enrollment.getCourseSection().getId());
         enrollmentRepository.delete(enrollment);
     }
 

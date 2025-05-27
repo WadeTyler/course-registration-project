@@ -1,17 +1,14 @@
 package net.tylerwade.registrationsystem.prerequisites;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import net.tylerwade.registrationsystem.course.Course;
 import net.tylerwade.registrationsystem.prerequisites.dto.PrerequisiteDTO;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "prerequisites",
@@ -23,11 +20,12 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Prerequisite {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -39,28 +37,10 @@ public class Prerequisite {
     private Course requiredCourse;
 
     @Column(nullable = false)
-    private Integer minimumGrade;
+    private BigDecimal minimumGrade;
 
     @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant modifiedAt;
-
-    public Prerequisite(Course course, Course requiredCourse, Integer minimumGrade) {
-        this.course = course;
-        this.requiredCourse = requiredCourse;
-        this.minimumGrade = minimumGrade;
-    }
-
-    public Prerequisite(Long id, Course course, Course requiredCourse, Integer minimumGrade, Instant createdAt, Instant modifiedAt) {
-        this.id = id;
-        this.course = course;
-        this.requiredCourse = requiredCourse;
-        this.minimumGrade = minimumGrade;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-    }
+    private Date createdAt;
 
     public PrerequisiteDTO toDTO() {
         return new PrerequisiteDTO(id,
@@ -69,7 +49,6 @@ public class Prerequisite {
                 requiredCourse.getDepartment(),
                 requiredCourse.getCode(),
                 minimumGrade,
-                createdAt,
-                modifiedAt);
+                createdAt);
     }
 }

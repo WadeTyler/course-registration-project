@@ -9,11 +9,10 @@ import net.tylerwade.registrationsystem.coursesection.dto.InstructorCourseSectio
 import net.tylerwade.registrationsystem.enrollment.Enrollment;
 import net.tylerwade.registrationsystem.term.Term;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -27,7 +26,7 @@ import java.util.List;
 public class CourseSection {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -46,6 +45,9 @@ public class CourseSection {
     private List<Enrollment> enrollments = new ArrayList<>();
 
     @Column(nullable = false)
+    private Integer enrolledCount;
+
+    @Column(nullable = false, length = 20)
     private String room;
 
     @Column(nullable = false)
@@ -55,31 +57,7 @@ public class CourseSection {
     private String schedule;
 
     @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant modifiedAt;
-
-    public CourseSection(Term term, User instructor, String room, Integer capacity, String schedule) {
-        this.term = term;
-        this.instructor = instructor;
-        this.room = room;
-        this.capacity = capacity;
-        this.schedule = schedule;
-    }
-
-    public CourseSection(Long id, Course course, Term term, User instructor, String room, Integer capacity, String schedule, Instant createdAt, Instant modifiedAt) {
-        this.id = id;
-        this.course = course;
-        this.term = term;
-        this.instructor = instructor;
-        this.room = room;
-        this.capacity = capacity;
-        this.schedule = schedule;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-    }
-
+    private Date createdAt;
 
     public CourseSectionDTO toDTO() {
         return new CourseSectionDTO(id,
@@ -89,7 +67,8 @@ public class CourseSection {
                 room,
                 capacity,
                 schedule,
-                enrollments.size()
+                enrolledCount,
+                createdAt
         );
     }
 
@@ -102,7 +81,8 @@ public class CourseSection {
                 room,
                 capacity,
                 schedule,
-                enrollments.size(),
-                enrollments.stream().map(Enrollment::toInstructorDTO).toList());
+                enrolledCount,
+                enrollments.stream().map(Enrollment::toInstructorDTO).toList(),
+                createdAt);
     }
 }

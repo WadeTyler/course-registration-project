@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(String userId) throws HttpRequestException {
+    public User findById(Long userId) throws HttpRequestException {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new HttpRequestException(HttpStatus.NOT_FOUND, "User not found."));
     }
@@ -57,12 +57,13 @@ public class UserServiceImpl implements UserService {
         }
 
         // Create new user
-        User user = new User();
-        user.setUsername(signupRequest.username());
-        user.setFirstName(signupRequest.firstName());
-        user.setLastName(signupRequest.lastName());
-        user.setPassword(passwordEncoder.encode(signupRequest.password())); // Encode Password
-        user.setGrantedAuthorities(STUDENT.getGrantedAuthoritiesString());    // Set student role
+        User user = User.builder()
+                .username(signupRequest.username())
+                .firstName(signupRequest.firstName())
+                .lastName(signupRequest.lastName())
+                .password(passwordEncoder.encode(signupRequest.password())) // Encode password
+                .grantedAuthorities(STUDENT.getGrantedAuthoritiesString())
+                .build();
 
         // Save and return
         userRepository.save(user);
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserAsAdmin(String userId, UpdateUserRequest updateUserRequest, Authentication authentication) throws HttpRequestException {
+    public User updateUserAsAdmin(Long userId, UpdateUserRequest updateUserRequest, Authentication authentication) throws HttpRequestException {
         User targetUser = userRepository.findById(userId)
                 .orElseThrow(() -> new HttpRequestException(HttpStatus.NOT_FOUND, "User not found."));
 
@@ -101,7 +102,13 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsernameIgnoreCase("admin@email.com")) return;
 
         // Create default admin
-        User admin = new User("admin@email.com", "admin", "admin", passwordEncoder.encode("123456"), UserRole.ADMIN.getGrantedAuthoritiesString());
+        User admin = User.builder()
+                .username("admin@email.com")
+                .password(passwordEncoder.encode("123456")) // Encode
+                .firstName("admin")
+                .lastName("admin")
+                .grantedAuthorities(UserRole.ADMIN.getGrantedAuthoritiesString())
+                .build();
 
         userRepository.save(admin);
     }
@@ -112,7 +119,13 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsernameIgnoreCase("instructor@email.com")) return;
 
         // Create default admin
-        User instructor = new User("instructor@email.com", "instructor", "instructor", passwordEncoder.encode("123456"), UserRole.INSTRUCTOR.getGrantedAuthoritiesString());
+        User instructor = User.builder()
+                .username("instructor@email.com")
+                .password(passwordEncoder.encode("123456")) // Encode
+                .firstName("instructor")
+                .lastName("instructor")
+                .grantedAuthorities(UserRole.INSTRUCTOR.getGrantedAuthoritiesString())
+                .build();
 
         userRepository.save(instructor);
     }
@@ -123,7 +136,13 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsernameIgnoreCase("student@email.com")) return;
 
         // Create default admin
-        User student = new User("student@email.com", "student", "student", passwordEncoder.encode("123456"), STUDENT.getGrantedAuthoritiesString());
+        User student = User.builder()
+                .username("student@email.com")
+                .password(passwordEncoder.encode("123456")) // Encode
+                .firstName("student")
+                .lastName("student")
+                .grantedAuthorities(STUDENT.getGrantedAuthoritiesString())
+                .build();
 
         userRepository.save(student);
     }

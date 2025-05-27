@@ -43,13 +43,13 @@ public class CourseSectionServiceImpl implements CourseSectionService {
 
     @Override
     public List<CourseSection> findAssignedCourseSections_AsInstructor(Authentication authentication) {
-        String instructorId = userService.getUser(authentication).getId();
+        Long instructorId = userService.getUser(authentication).getId();
         return courseSectionRepository.findAllByInstructor_Id(instructorId);
     }
 
     @Override
     public CourseSection findAssignedCourseSectionById_AsInstructor(Long sectionId, Authentication authentication) throws HttpRequestException {
-        String instructorId = userService.getUser(authentication).getId();
+        Long instructorId = userService.getUser(authentication).getId();
         return courseSectionRepository.findByIdAndInstructor_Id(sectionId, instructorId).orElseThrow(() -> new HttpRequestException(HttpStatus.NOT_FOUND, "Assigned Course section not found."));
     }
 
@@ -83,6 +83,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
                 .room(manageCourseSectionRequest.room())
                 .capacity(manageCourseSectionRequest.capacity())
                 .schedule(manageCourseSectionRequest.schedule())
+                .enrolledCount(0)
                 .build();
 
         // Save and return
@@ -133,5 +134,12 @@ public class CourseSectionServiceImpl implements CourseSectionService {
             throw new HttpRequestException(HttpStatus.NOT_FOUND, "Course Section not found.");
         }
         courseSectionRepository.deleteById(sectionId);
+    }
+
+    @Override
+    public CourseSection refreshEnrollmentCount(Long courseSectionId) throws HttpRequestException {
+        CourseSection courseSection = findById(courseSectionId);
+        courseSection.setEnrolledCount(courseSection.getEnrollments().size());
+        return courseSectionRepository.save(courseSection);
     }
 }

@@ -7,10 +7,10 @@ import net.tylerwade.registrationsystem.coursesection.CourseSection;
 import net.tylerwade.registrationsystem.enrollment.dto.EnrollmentDTO;
 import net.tylerwade.registrationsystem.enrollment.dto.InstructorEnrollmentDTO;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "enrollments", uniqueConstraints = {
@@ -25,26 +25,25 @@ import java.time.Instant;
 public class Enrollment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
     @ManyToOne
-    @JoinColumn(name = "course_section_id")
+    @JoinColumn(name = "course_section_id", nullable = false)
     private CourseSection courseSection;
 
-    private Integer grade;
+    @Column(nullable = false)
+    private BigDecimal grade;
 
+    @Column(nullable = false)
     private String status;
 
     @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant modifiedAt;
+    private Date createdAt;
 
     public EnrollmentDTO toDTO() {
         return new EnrollmentDTO(id,
@@ -52,8 +51,7 @@ public class Enrollment {
                 courseSection.toDTO(),
                 grade,
                 status,
-                createdAt,
-                modifiedAt);
+                createdAt);
     }
 
     public InstructorEnrollmentDTO toInstructorDTO() {
@@ -63,8 +61,7 @@ public class Enrollment {
                 courseSection.getId(),
                 grade,
                 status,
-                createdAt,
-                modifiedAt
+                createdAt
         );
     }
 

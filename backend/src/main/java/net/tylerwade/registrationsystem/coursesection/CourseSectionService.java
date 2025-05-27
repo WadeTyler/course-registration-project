@@ -76,4 +76,13 @@ public interface CourseSectionService {
      */
     void delete(Long sectionId) throws HttpRequestException;
 
+    /**
+     * Refreshes the enrollment count for a course section.
+     *
+     * @param courseSectionId the ID of the course section
+     * @return the updated course section with refreshed enrollment count
+     * @throws HttpRequestException if the course section is not found
+     */
+    CourseSection refreshEnrollmentCount(Long courseSectionId) throws HttpRequestException;
+
 }

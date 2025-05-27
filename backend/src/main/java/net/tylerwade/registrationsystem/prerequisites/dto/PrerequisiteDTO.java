@@ -1,15 +1,15 @@
 package net.tylerwade.registrationsystem.prerequisites.dto;
 
-import java.time.Instant;
+import java.math.BigDecimal;
+import java.util.Date;
 
 public record PrerequisiteDTO(
     Long id,
     Long courseId,
     Long requiredCourseId,
     String requiredCourseDepartment,
-    String requiredCourseCode,
-    Integer minimumGrade,
-    Instant createdAt,
-    Instant modifiedAt
+    Integer requiredCourseCode,
+    BigDecimal minimumGrade,
+    Date createdAt
 ) {
 }
