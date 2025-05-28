@@ -5,9 +5,11 @@ import net.tylerwade.registrationsystem.common.APIResponse;
 import net.tylerwade.registrationsystem.config.AppProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -29,6 +31,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getHttpStatus()).body(new APIResponse<>(false, e.getMessage(), null));
     }
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<?> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+        printDebugMessage(e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new APIResponse<>(false, e.getMessage(), null));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         printDebugMessage(e);
@@ -44,6 +52,12 @@ public class GlobalExceptionHandler {
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new APIResponse<>(false, errors.toString(), null));
+    }
+
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<?> handleNoResourceFoundException(NoResourceFoundException e) {
+        return ResponseEntity.status(e.getStatusCode()).body(new APIResponse<>(false, e.getMessage(), null));
     }
 
     // Catch all
