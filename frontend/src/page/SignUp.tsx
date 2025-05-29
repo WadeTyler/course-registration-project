@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const SignUp: React.FC = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,6 +54,14 @@ const SignUp: React.FC = () => {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
             />
+            <input
+                type="text"
+                placeholder="Username"
+                className="border border-gray-300 rounded px-4 py-2"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+            />
+
             <input
                 type="email"
                 placeholder="Email"
