@@ -1,15 +1,24 @@
-import './styles/App.css'
-import HomePage from "./page/HomePage.tsx";
-import {Route, Routes} from "react-router-dom";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-function App() {
+import Login from './page/Login';
+import Dashboard from './page/Dashboard';
+import Courses from './page/Courses';
+import CourseDetails from './page/CourseDetails';
+import MySchedule from './page/MySchedule';
+import AdminPanel from './page/AdminPanel';
 
+const App: React.FC = () => {
   return (
     <Routes>
-      {/* Routes go here. Path is the endpoint for the element. */}
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/courses" element={<Courses />} />
+      <Route path="/courses/:id" element={<CourseDetails />} />
+      <Route path="/schedule" element={<MySchedule />} />
+      <Route path="/admin" element={<AdminPanel />} />
     </Routes>
-  )
-}
+  );
+};
 
-export default App
+export default App;
