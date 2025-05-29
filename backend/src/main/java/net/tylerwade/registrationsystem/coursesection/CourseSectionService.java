@@ -19,7 +19,7 @@ public interface CourseSectionService {
      * @param courseId the ID of the course
      * @return list of course sections
      */
-    List<CourseSection> findAllByCourse_Id(Long courseId);
+    List<CourseSection> findAllByCourse_Id(Long courseId) throws HttpRequestException;
 
     /**
      * Finds a course section by its ID.
