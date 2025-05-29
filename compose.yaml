@@ -13,6 +13,6 @@ services:
       MYSQL_USER: register_rus_user
       MYSQL_PASSWORD: lkjasdfoiuLKN98
     volumes:
-      - ./db_init:/docker-entrypoint-initdb.d
+      - ./db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
     extra_hosts:
       - "host.docker.internal:host-gateway"
