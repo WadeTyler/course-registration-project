@@ -20,7 +20,19 @@ CREATE TABLE user_authorities (
 );
 
 ALTER TABLE user_authorities ADD CONSTRAINT FK_user_authorities_user_id FOREIGN KEY (user_id) REFERENCES users (id);
+ALTER TABLE user_authorities ADD CONSTRAINT FK_user_authorities_authority_id FOREIGN KEY (authority) REFERENCES authorities (id);
+COMMIT;
 
+-- Create the Authorities Table
+CREATE TABLE authorities (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(13) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO authorities (name) VALUES ('Administrator');
+INSERT INTO authorities (name) VALUES ('Instructor');
+INSERT INTO authorities (name) VALUES ('Student');
 COMMIT;
 
 -- Create Terms
@@ -101,13 +113,12 @@ COMMIT;
 
 -- Create enrollments Table
 CREATE TABLE enrollments (
-    id INT NOT NULL AUTO_INCREMENT,
     student_id INT NOT NULL,
     course_section_id INT NOT NULL,
     grade decimal NOT NULL,
     status VARCHAR(255) NOT NULL,
     created_at DATE,
-    PRIMARY KEY (id)
+    PRIMARY KEY (student_id, course_section_id)
 );
 
 -- What do we want to do with status here? Just a text box?
