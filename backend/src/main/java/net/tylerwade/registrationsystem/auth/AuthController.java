@@ -43,6 +43,12 @@ public class AuthController {
     /*
      * Signup
      */
+    @Operation(summary = "Signup and create an account.", description = "Creates a user account nad authenticates the user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Signup successful."),
+            @ApiResponse(responseCode = "400", description = "Invalid fields."),
+            @ApiResponse(responseCode = "409", description = "Account already exists with email.")
+    })
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest, HttpServletResponse response) throws HttpRequestException {
         User user = this.userService.signup(signupRequest);
