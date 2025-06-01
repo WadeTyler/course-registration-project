@@ -13,6 +13,13 @@ import java.util.List;
 @Service
 public interface CourseSectionService {
 
+
+    /**
+     * Finds all course setions.
+     * @return list of course sections
+     */
+    List<CourseSection> findAll();
+
     /**
      * Finds all course sections for a given course.
      *

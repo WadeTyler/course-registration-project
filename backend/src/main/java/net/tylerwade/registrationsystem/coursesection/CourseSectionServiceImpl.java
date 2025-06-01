@@ -32,6 +32,11 @@ public class CourseSectionServiceImpl implements CourseSectionService {
 
 
     @Override
+    public List<CourseSection> findAll() {
+        return courseSectionRepository.findAll();
+    }
+
+    @Override
     public List<CourseSection> findAllByCourse_Id(Long courseId) throws HttpRequestException {
         Course course = courseService.findById(courseId);
         return courseSectionRepository.findAllByCourse_Id(course.getId());

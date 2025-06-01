@@ -2,7 +2,7 @@ package net.tylerwade.registrationsystem.common;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ErrorResponse {
 
-    LocalDateTime timestamp;
+    Instant timestamp;
     int status;
     String error;
     String message;

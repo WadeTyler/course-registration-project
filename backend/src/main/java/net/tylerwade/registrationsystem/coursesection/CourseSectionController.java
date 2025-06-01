@@ -18,6 +18,7 @@ import java.util.List;
 
 @Tag(name = "Course Section Controller", description = "Operations related to Course Section.")
 @RestController
+@RequestMapping("/api/sections")
 public class CourseSectionController {
 
     private final CourseSectionService courseSectionService;
@@ -26,18 +27,23 @@ public class CourseSectionController {
         this.courseSectionService = courseSectionService;
     }
 
+
     /*
-     * Find All by course ID
+     * Find All or find all by course id
      */
-    @Operation(summary = "Retrieves all sections within a course.", description = "Finds all sections by course id")
+    @Operation(summary = "Retrieves all sections or all sections within a course.", description = "Finds all sections or all sections within a course")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found"),
             @ApiResponse(responseCode = "404", description = "Course not found.")
     })
-    @GetMapping("/api/courses/{courseId}/sections")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CourseSectionDTO> findAllByCourse_Id(@PathVariable Long courseId) throws HttpRequestException {
-        return courseSectionService.findAllByCourse_Id(courseId).stream().map(CourseSection::toDTO).toList();
+    public List<CourseSectionDTO> findAllByCourse_Id(@RequestParam(required = false) Long courseId) throws HttpRequestException {
+        if (courseId != null) {
+            return courseSectionService.findAllByCourse_Id(courseId).stream().map(CourseSection::toDTO).toList();
+        } else {
+            return courseSectionService.findAll().stream().map(CourseSection::toDTO).toList();
+        }
     }
 
     /*
@@ -62,7 +68,7 @@ public class CourseSectionController {
     @Operation(summary = "Find assigned sections (INSTRUCTOR, ADMIN)", description = "Find instructor assigned courses. Instructor or Admin only.")
     @ApiResponse(responseCode = "200", description = "Retrieved")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
-    @GetMapping("/api/sections/assigned")
+    @GetMapping("//assigned")
     @ResponseStatus(HttpStatus.OK)
     public List<InstructorCourseSectionDTO> findAssignedCourseSections(Authentication authentication) {
         return courseSectionService.findAssignedCourseSections_AsInstructor(authentication).stream()
@@ -78,7 +84,7 @@ public class CourseSectionController {
             @ApiResponse(responseCode = "404", description = "Assigned Section not found.")
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
-    @GetMapping("/api/sections/assigned/{sectionId}")
+    @GetMapping("/assigned/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public InstructorCourseSectionDTO findAssignedCourseSectionById(Authentication authentication, @PathVariable Long sectionId) throws HttpRequestException {
         return courseSectionService.findAssignedCourseSectionById_AsInstructor(sectionId, authentication).toInstructorDTO();
@@ -95,9 +101,9 @@ public class CourseSectionController {
             @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/api/course/{courseId}/sections")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CourseSectionDTO create(@PathVariable Long courseId, @Valid @RequestBody ManageCourseSectionRequest manageCourseSectionRequest) throws HttpRequestException {
+    public CourseSectionDTO create(@RequestParam Long courseId, @Valid @RequestBody ManageCourseSectionRequest manageCourseSectionRequest) throws HttpRequestException {
         return courseSectionService.create(courseId, manageCourseSectionRequest).toDTO();
     }
 
@@ -111,7 +117,7 @@ public class CourseSectionController {
             @ApiResponse(responseCode = "404", description = "Section not found")
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/api/sections/{sectionId}")
+    @PutMapping("/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public CourseSectionDTO update(@PathVariable Long sectionId, @Valid @RequestBody ManageCourseSectionRequest manageCourseSectionRequest) throws HttpRequestException {
         return courseSectionService.update(sectionId, manageCourseSectionRequest).toDTO();
@@ -126,7 +132,7 @@ public class CourseSectionController {
             @ApiResponse(responseCode = "404", description = "Section not found")
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/api/sections/{sectionId}")
+    @DeleteMapping("/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public String delete(@PathVariable Long sectionId) throws HttpRequestException {
         courseSectionService.delete(sectionId);
