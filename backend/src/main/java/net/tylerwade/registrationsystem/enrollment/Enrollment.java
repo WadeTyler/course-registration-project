@@ -22,18 +22,23 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
+@IdClass(EnrollmentId.class)
 public class Enrollment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "student_id")
+    private Long studentId;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id", nullable = false)
+    @Id
+    @Column(name = "course_section_id")
+    private Long courseSectionId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User student;
 
-    @ManyToOne
-    @JoinColumn(name = "course_section_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_section_id", referencedColumnName = "id", insertable = false, updatable = false)
     private CourseSection courseSection;
 
     @Column(nullable = false)
@@ -46,7 +51,7 @@ public class Enrollment {
     private Date createdAt;
 
     public EnrollmentDTO toDTO() {
-        return new EnrollmentDTO(id,
+        return new EnrollmentDTO(
                 student.toDTO(),
                 courseSection.toDTO(),
                 grade,
@@ -56,7 +61,6 @@ public class Enrollment {
 
     public InstructorEnrollmentDTO toInstructorDTO() {
         return new InstructorEnrollmentDTO(
-                id,
                 student.toDTO(),
                 courseSection.getId(),
                 grade,

@@ -68,7 +68,7 @@ public class CourseSectionController {
     @Operation(summary = "Find assigned sections (INSTRUCTOR, ADMIN)", description = "Find instructor assigned courses. Instructor or Admin only.")
     @ApiResponse(responseCode = "200", description = "Retrieved")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
-    @GetMapping("//assigned")
+    @GetMapping("/assigned")
     @ResponseStatus(HttpStatus.OK)
     public List<InstructorCourseSectionDTO> findAssignedCourseSections(Authentication authentication) {
         return courseSectionService.findAssignedCourseSections_AsInstructor(authentication).stream()

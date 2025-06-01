@@ -38,18 +38,11 @@ public class TokenServiceImpl implements TokenService {
                 .filter(auth -> auth.startsWith("ROLE_"))
                 .toList();
 
-        var scopes = authorities.stream()
-                .filter(auth -> !auth.startsWith("ROLE_"))
-                .toList();
-
-        String scopeString = String.join(" ", scopes);
-
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(jwtProperties.issuer())
                 .issuedAt(now)
                 .expiresAt(now.plus(jwtProperties.expirationMs(), ChronoUnit.MILLIS))
                 .subject(authentication.getName())
-                .claim("scope", scopeString)
                 .claim("roles", roles)
                 .build();
 

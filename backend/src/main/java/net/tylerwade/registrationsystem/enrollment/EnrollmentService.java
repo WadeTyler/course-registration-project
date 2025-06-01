@@ -34,7 +34,7 @@ public interface EnrollmentService {
      * Creates a new enrollment for the authenticated student.
      *
      * @param createEnrollmentRequest the enrollment request
-     * @param authentication the authentication object
+     * @param authentication          the authentication object
      * @return the created enrollment
      * @throws HttpRequestException if the enrollment cannot be created
      */
@@ -43,22 +43,24 @@ public interface EnrollmentService {
     /**
      * Updates an existing enrollment.
      *
-     * @param enrollmentId the enrollment ID
+     * @param studentId               the student ID
+     * @param courseSectionId         the enrollment course section
      * @param manageEnrollmentRequest the update request
-     * @param authentication the authentication object
+     * @param authentication          the authentication object
      * @return the updated enrollment
      * @throws HttpRequestException if the enrollment cannot be updated
      */
-    Enrollment update(Long enrollmentId, ManageEnrollmentRequest manageEnrollmentRequest, Authentication authentication) throws HttpRequestException;
+    Enrollment update(Long studentId, Long courseSectionId, ManageEnrollmentRequest manageEnrollmentRequest, Authentication authentication) throws HttpRequestException;
 
     /**
      * Deletes an enrollment.
      *
-     * @param enrollmentId the enrollment ID
-     * @param authentication the authentication object
+     * @param studentId       the student ID
+     * @param courseSectionId the enrollment course section ID
+     * @param authentication  the authentication object
      * @throws HttpRequestException if the enrollment cannot be deleted
      */
-    void delete(Long enrollmentId, Authentication authentication) throws HttpRequestException;
+    void delete(Long studentId, Long courseSectionId, Authentication authentication) throws HttpRequestException;
 
     /**
      * Updates the status of started enrollments.

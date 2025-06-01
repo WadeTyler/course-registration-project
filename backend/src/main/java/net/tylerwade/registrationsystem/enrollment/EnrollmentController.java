@@ -1,7 +1,6 @@
 package net.tylerwade.registrationsystem.enrollment;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -63,10 +62,13 @@ public class EnrollmentController {
             @ApiResponse(responseCode = "200", description = "Enrollment deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Enrollment not found")
     })
-    @DeleteMapping("/{enrollmentId}")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public String delete(Authentication authentication, @Parameter(description = "ID of the enrollment") @PathVariable Long enrollmentId) throws HttpRequestException {
-        enrollmentService.delete(enrollmentId, authentication);
+    public String delete(Authentication authentication,
+                         @RequestParam Long courseSectionId,
+                         @RequestParam Long studentId
+    ) throws HttpRequestException {
+        enrollmentService.delete(studentId, courseSectionId, authentication);
         return "Enrollment deleted.";
     }
 
@@ -82,9 +84,12 @@ public class EnrollmentController {
             @ApiResponse(responseCode = "404", description = "Enrollment not found")
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
-    @PutMapping("/{enrollmentId}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public EnrollmentDTO update(Authentication authentication, @Parameter(description = "ID of the enrollment") @PathVariable Long enrollmentId, @Valid @RequestBody ManageEnrollmentRequest manageEnrollmentRequest) throws HttpRequestException {
-        return enrollmentService.update(enrollmentId, manageEnrollmentRequest, authentication).toDTO();
+    public EnrollmentDTO update(Authentication authentication,
+                                @RequestParam Long courseSectionId,
+                                @RequestParam Long studentId,
+                                @Valid @RequestBody ManageEnrollmentRequest manageEnrollmentRequest) throws HttpRequestException {
+        return enrollmentService.update(studentId, courseSectionId, manageEnrollmentRequest, authentication).toDTO();
     }
 }

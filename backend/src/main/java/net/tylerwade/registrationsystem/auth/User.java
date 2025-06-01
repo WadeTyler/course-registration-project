@@ -3,6 +3,7 @@ package net.tylerwade.registrationsystem.auth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import net.tylerwade.registrationsystem.auth.authority.Authority;
 import net.tylerwade.registrationsystem.auth.dto.UserDTO;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -42,10 +43,13 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_authorities", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "authority")
-    private Set<String> grantedAuthorities;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_authorities",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id")
+    )
+    private Set<Authority> userAuthorities;
 
     @CreatedDate
     private Date createdAt;
@@ -54,9 +58,11 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return grantedAuthorities.stream()
-                .map(SimpleGrantedAuthority::new)
+        Set<SimpleGrantedAuthority> auth = userAuthorities.stream()
+                .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getName()))
                 .collect(Collectors.toSet());
+        System.out.println(auth);
+        return auth;
     }
 
     @Override
@@ -96,7 +102,34 @@ public class User implements UserDetails {
                 username,
                 firstName,
                 lastName,
-                grantedAuthorities,
+                userAuthorities,
                 createdAt);
+    }
+
+    @JsonIgnore
+    public boolean isAdmin() {
+        return userAuthorities
+                .stream()
+                .filter(authority -> authority.getName().equalsIgnoreCase("ADMIN"))
+                .findFirst()
+                .orElse(null) != null;
+    }
+
+    @JsonIgnore
+    public boolean isInstructor() {
+        return userAuthorities
+                .stream()
+                .filter(authority -> authority.getName().equalsIgnoreCase("INSTRUCTOR"))
+                .findFirst()
+                .orElse(null) != null;
+    }
+
+    @JsonIgnore
+    public boolean isStudent() {
+        return userAuthorities
+                .stream()
+                .filter(authority -> authority.getName().equalsIgnoreCase("STUDENT"))
+                .findFirst()
+                .orElse(null) != null;
     }
 }

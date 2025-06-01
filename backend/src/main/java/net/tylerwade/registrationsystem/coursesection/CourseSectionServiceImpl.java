@@ -2,7 +2,6 @@ package net.tylerwade.registrationsystem.coursesection;
 
 import net.tylerwade.registrationsystem.auth.User;
 import net.tylerwade.registrationsystem.auth.UserService;
-import net.tylerwade.registrationsystem.config.security.authorities.UserRole;
 import net.tylerwade.registrationsystem.course.Course;
 import net.tylerwade.registrationsystem.course.CourseService;
 import net.tylerwade.registrationsystem.coursesection.dto.ManageCourseSectionRequest;
@@ -74,8 +73,8 @@ public class CourseSectionServiceImpl implements CourseSectionService {
             // Find target instructor
             instructor = userService.findById(manageCourseSectionRequest.instructorId());
 
-            // Check instructor is ADMIN or INSTRUCTOR
-            if (!instructor.getGrantedAuthorities().contains(UserRole.INSTRUCTOR.getNameWithPrefix()) && !instructor.getGrantedAuthorities().contains(UserRole.ADMIN.getNameWithPrefix())) {
+            // Check user is ADMIN or INSTRUCTOR
+            if (!instructor.isInstructor() && !instructor.isAdmin()) {
                 throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE, "Target Instructor does not have INSTRUCTOR or ADMIN permissions.");
             }
         }
@@ -113,7 +112,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
             instructor = userService.findById(manageCourseSectionRequest.instructorId());
 
             // Check instructor is ADMIN or INSTRUCTOR
-            if (!instructor.getGrantedAuthorities().contains(UserRole.INSTRUCTOR.getNameWithPrefix()) && !instructor.getGrantedAuthorities().contains(UserRole.ADMIN.getNameWithPrefix())) {
+            if (!instructor.isInstructor() && !instructor.isAdmin()) {
                 throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE, "Target Instructor does not have INSTRUCTOR or ADMIN permissions.");
             }
         }

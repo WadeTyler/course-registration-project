@@ -84,18 +84,18 @@ public interface UserService extends UserDetailsService {
      * Creates a default admin user in the system if one does not already exist.
      * This method is typically used for initial setup or to ensure that an admin account is available.
      */
-    void createDefaultAdmin();
+    void createDefaultAdmin() throws HttpRequestException;
 
 
     /**
      * Creates a default instructor user in the system if one does not already exist.
      * This method is typically used for initial setup or to ensure that an instructor account is available.
      */
-    void createDefaultInstructor();
+    void createDefaultInstructor() throws HttpRequestException;
 
     /**
      * Creates a default student user in the system if one does not already exist.
      * This method is typically used for initial setup or to ensure that an student account is available.
      */
-    void createDefaultStudent();
+    void createDefaultStudent() throws HttpRequestException;
 }

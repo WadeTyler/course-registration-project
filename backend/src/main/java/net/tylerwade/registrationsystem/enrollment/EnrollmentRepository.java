@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
+public interface EnrollmentRepository extends JpaRepository<Enrollment, EnrollmentId> {
 
     List<Enrollment> findAllByStatusIsAndCourseSection_Term_StartDateBefore(String status, Date courseSectionTermStartDateBefore);
 

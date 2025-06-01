@@ -2,7 +2,6 @@ package net.tylerwade.registrationsystem.enrollment;
 
 import net.tylerwade.registrationsystem.auth.User;
 import net.tylerwade.registrationsystem.auth.UserService;
-import net.tylerwade.registrationsystem.config.security.authorities.UserRole;
 import net.tylerwade.registrationsystem.coursesection.CourseSection;
 import net.tylerwade.registrationsystem.coursesection.CourseSectionService;
 import net.tylerwade.registrationsystem.enrollment.dto.CreateEnrollmentRequest;
@@ -96,7 +95,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         // Create enrollment
         Enrollment enrollment = Enrollment.builder()
+                .studentId(student.getId())
                 .student(student)
+                .courseSectionId(courseSection.getId())
                 .courseSection(courseSection)
                 .grade(new BigDecimal(0))
                 .status("NOT_STARTED")
@@ -113,13 +114,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public Enrollment update(Long enrollmentId, ManageEnrollmentRequest manageEnrollmentRequest, Authentication authentication) throws HttpRequestException {
-        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+    public Enrollment update(Long studentId, Long courseSectionId, ManageEnrollmentRequest manageEnrollmentRequest, Authentication authentication) throws HttpRequestException {
+        Enrollment enrollment = enrollmentRepository.findById(new EnrollmentId(studentId, courseSectionId))
                 .orElseThrow(() -> new HttpRequestException(HttpStatus.NOT_FOUND, "Enrollment not found."));
 
         // Check if user modifying is the instructor for the course section, or an administrator
         User authUser = userService.getUser(authentication);
-        if (!enrollment.getCourseSection().getInstructor().getId().equals(authUser.getId()) && !authUser.getGrantedAuthorities().contains(UserRole.ADMIN.getNameWithPrefix())) {
+        if (!enrollment.getCourseSection().getInstructor().getId().equals(authUser.getId()) && !authUser.isAdmin()) {
             throw new HttpRequestException(HttpStatus.UNAUTHORIZED, "You are not authorized to perform that action.");
         }
 
@@ -132,14 +133,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public void delete(Long enrollmentId, Authentication authentication) throws HttpRequestException {
+    public void delete(Long studentId, Long courseSectionId, Authentication authentication) throws HttpRequestException {
         // Check if enrollment exists
-        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+        Enrollment enrollment = enrollmentRepository.findById(new EnrollmentId(studentId, courseSectionId))
                 .orElseThrow(() -> new HttpRequestException(HttpStatus.NOT_FOUND, "Enrollment not found."));
 
         // Check if AuthUser is either the student, the course section instructor, or an admin
         User authUser = userService.getUser(authentication);
-        if (!enrollment.getStudent().getId().equals(authUser.getId()) && !enrollment.getCourseSection().getInstructor().getId().equals(authUser.getId()) && !authUser.getGrantedAuthorities().contains(UserRole.ADMIN.getNameWithPrefix())) {
+        if (!enrollment.getStudent().getId().equals(authUser.getId()) && !enrollment.getCourseSection().getInstructor().getId().equals(authUser.getId()) && !authUser.isAdmin()) {
             throw new HttpRequestException(HttpStatus.UNAUTHORIZED, "You are not authorized to perform that action.");
         }
 

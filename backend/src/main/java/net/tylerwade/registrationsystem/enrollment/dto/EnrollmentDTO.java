@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public record EnrollmentDTO(
-        Long id,
         UserDTO student,
         CourseSectionDTO courseSection,
         BigDecimal grade,
