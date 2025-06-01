@@ -6,18 +6,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import net.tylerwade.registrationsystem.common.APIResponse;
 import net.tylerwade.registrationsystem.enrollment.dto.CreateEnrollmentRequest;
 import net.tylerwade.registrationsystem.enrollment.dto.EnrollmentDTO;
 import net.tylerwade.registrationsystem.enrollment.dto.ManageEnrollmentRequest;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import javax.lang.model.type.NullType;
 import java.util.List;
 
 @Tag(name = "Enrollment Controller", description = "Operations related to enrollments")
@@ -39,10 +36,9 @@ public class EnrollmentController {
             @ApiResponse(responseCode = "200", description = "Enrollments retrieved successfully")
     })
     @GetMapping
-    public ResponseEntity<APIResponse<List<EnrollmentDTO>>> findAllByStudent(Authentication authentication) {
-        List<EnrollmentDTO> enrollments = enrollmentService.findAllByStudent(authentication).stream().map(Enrollment::toDTO).toList();
-
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success("Enrollments retrieved.", enrollments));
+    @ResponseStatus(HttpStatus.OK)
+    public List<EnrollmentDTO> findAllByStudent(Authentication authentication) {
+        return enrollmentService.findAllByStudent(authentication).stream().map(Enrollment::toDTO).toList();
     }
 
     /**
@@ -54,10 +50,9 @@ public class EnrollmentController {
             @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public ResponseEntity<APIResponse<EnrollmentDTO>> create(Authentication authentication, @Valid @RequestBody CreateEnrollmentRequest createEnrollmentRequest) throws HttpRequestException {
-        EnrollmentDTO enrollment = enrollmentService.create(createEnrollmentRequest, authentication).toDTO();
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.success("Enrollment successful.", enrollment));
+    @ResponseStatus(HttpStatus.CREATED)
+    public EnrollmentDTO create(Authentication authentication, @Valid @RequestBody CreateEnrollmentRequest createEnrollmentRequest) throws HttpRequestException {
+        return enrollmentService.create(createEnrollmentRequest, authentication).toDTO();
     }
 
     /**
@@ -69,9 +64,10 @@ public class EnrollmentController {
             @ApiResponse(responseCode = "404", description = "Enrollment not found")
     })
     @DeleteMapping("/{enrollmentId}")
-    public ResponseEntity<APIResponse<NullType>> delete(Authentication authentication, @Parameter(description = "ID of the enrollment") @PathVariable Long enrollmentId) throws HttpRequestException {
+    @ResponseStatus(HttpStatus.OK)
+    public String delete(Authentication authentication, @Parameter(description = "ID of the enrollment") @PathVariable Long enrollmentId) throws HttpRequestException {
         enrollmentService.delete(enrollmentId, authentication);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success("Enrollment deleted."));
+        return "Enrollment deleted.";
     }
 
     ///  --- INSTRUCTOR ENDPOINTS
@@ -87,9 +83,8 @@ public class EnrollmentController {
     })
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_INSTRUCTOR')")
     @PutMapping("/{enrollmentId}")
-    public ResponseEntity<APIResponse<EnrollmentDTO>> update(Authentication authentication, @Parameter(description = "ID of the enrollment") @PathVariable Long enrollmentId, @Valid @RequestBody ManageEnrollmentRequest manageEnrollmentRequest) throws HttpRequestException {
-        EnrollmentDTO enrollment = enrollmentService.update(enrollmentId, manageEnrollmentRequest, authentication).toDTO();
-
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success("Enrollment updated.", enrollment));
+    @ResponseStatus(HttpStatus.OK)
+    public EnrollmentDTO update(Authentication authentication, @Parameter(description = "ID of the enrollment") @PathVariable Long enrollmentId, @Valid @RequestBody ManageEnrollmentRequest manageEnrollmentRequest) throws HttpRequestException {
+        return enrollmentService.update(enrollmentId, manageEnrollmentRequest, authentication).toDTO();
     }
 }

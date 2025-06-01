@@ -4,13 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import net.tylerwade.registrationsystem.common.APIResponse;
+import net.tylerwade.registrationsystem.common.ErrorResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import javax.lang.model.type.NullType;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -20,8 +21,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType("application/json");
 
         ObjectMapper objectMapper = new ObjectMapper();
-        APIResponse<NullType> apiResponse = new APIResponse<>(false, "You are unauthorized to perform that action.", null);
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), "You are unauthorized to perform that action.");
 
-        response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }

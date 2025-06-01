@@ -13,7 +13,6 @@ import net.tylerwade.registrationsystem.auth.dto.SignupRequest;
 import net.tylerwade.registrationsystem.auth.dto.UpdateUserRequest;
 import net.tylerwade.registrationsystem.auth.dto.UserDTO;
 import net.tylerwade.registrationsystem.auth.token.TokenService;
-import net.tylerwade.registrationsystem.common.APIResponse;
 import net.tylerwade.registrationsystem.common.PageResponse;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
 import org.springdoc.core.annotations.ParameterObject;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +48,8 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "Account already exists with email.")
     })
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest signupRequest, HttpServletResponse response) throws HttpRequestException {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO signup(@Valid @RequestBody SignupRequest signupRequest, HttpServletResponse response) throws HttpRequestException {
         User user = this.userService.signup(signupRequest);
 
         // Add authCookie
@@ -58,7 +57,7 @@ public class AuthController {
         Cookie authCookie = tokenService.generateAuthTokenCookie(authentication);
         response.addCookie(authCookie);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new APIResponse<>(true, "Signup successful.", user.toDTO()));
+        return user.toDTO();
     }
 
     /*
@@ -70,12 +69,12 @@ public class AuthController {
     })
     @SecurityRequirement(name = "basicAuth")
     @PostMapping("/login")
-    public ResponseEntity<?> getToken(Authentication authentication, HttpServletResponse response) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO getToken(Authentication authentication, HttpServletResponse response) {
         Cookie authCookie = tokenService.generateAuthTokenCookie(authentication);
         response.addCookie(authCookie);
 
-        UserDTO user = userService.getUser(authentication).toDTO();
-        return ResponseEntity.status(HttpStatus.CREATED).body(new APIResponse<>(true, "Login successful.", user));
+        return userService.getUser(authentication).toDTO();
     }
 
     /*
@@ -86,9 +85,9 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "User retrieved successfully")
     })
     @GetMapping
-    public ResponseEntity<?> getUser(Authentication authentication) {
-        UserDTO user = this.userService.getUser(authentication).toDTO();
-        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(true, "User Retrieved.", user));
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO getUser(Authentication authentication) {
+        return this.userService.getUser(authentication).toDTO();
     }
 
     /*
@@ -99,10 +98,11 @@ public class AuthController {
         @ApiResponse(responseCode = "200", description = "Logout successful")
     })
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
+    @ResponseStatus(HttpStatus.OK)
+    public String logout(HttpServletResponse response) {
         response.addCookie(tokenService.generateLogoutCookie());
-        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(true, "Logout Successful.", null));
 
+        return "Logout successful";
     }
 
     /*
@@ -114,15 +114,15 @@ public class AuthController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(@ParameterObject Pageable pageable,
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<UserDTO> getAllUsers(@ParameterObject Pageable pageable,
                                          @Parameter(description = "Search query for users") @RequestParam(required = false) String search) {
         Page<UserDTO> page = userService.findAll(pageable, search).map(User::toDTO);
-        PageResponse<UserDTO> pageResponse = new PageResponse<>(page.getContent(),
+        return new PageResponse<>(page.getContent(),
                 page.getNumber(),
                 page.getSize(),
                 page.getTotalElements(),
                 page.getTotalPages());
-        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(true, "Users retrieved.", pageResponse));
     }
 
     /*
@@ -134,9 +134,9 @@ public class AuthController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/users/{userId}")
-    public ResponseEntity<?> updateUser(Authentication authentication, @Parameter(description = "ID of the user to update") @PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) throws HttpRequestException {
-        UserDTO updatedUser = userService.updateUserAsAdmin(userId, updateUserRequest, authentication).toDTO();
-        return ResponseEntity.status(HttpStatus.OK).body(new APIResponse<>(true, "User updated.", updatedUser));
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO updateUser(Authentication authentication, @Parameter(description = "ID of the user to update") @PathVariable Long userId, @RequestBody UpdateUserRequest updateUserRequest) throws HttpRequestException {
+        return userService.updateUserAsAdmin(userId, updateUserRequest, authentication).toDTO();
     }
 }
 

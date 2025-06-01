@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import net.tylerwade.registrationsystem.common.APIResponse;
 import net.tylerwade.registrationsystem.common.PageResponse;
 import net.tylerwade.registrationsystem.course.dto.CourseDTO;
 import net.tylerwade.registrationsystem.course.dto.ManageCourseRequest;
@@ -15,11 +14,8 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.lang.model.type.NullType;
 
 @Tag(name = "Course Controller", description = "Operations related to courses")
 @RestController
@@ -40,11 +36,10 @@ public class CourseController {
             @ApiResponse(responseCode = "200", description = "Courses retrieved successfully")
     })
     @GetMapping
-    public ResponseEntity<APIResponse<PageResponse<CourseDTO>>> findAll(@ParameterObject Pageable pageable) {
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<CourseDTO> findAll(@ParameterObject Pageable pageable) {
         Page<CourseDTO> page = courseService.findAll(pageable).map(Course::toDTO);
-        PageResponse<CourseDTO> pageResponse = PageResponse.convertPage(page);
-
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success("Courses retrieved.", pageResponse));
+        return PageResponse.convertPage(page);
     }
 
     /**
@@ -56,10 +51,10 @@ public class CourseController {
             @ApiResponse(responseCode = "404", description = "Course not found")
     })
     @GetMapping("/{courseId}")
-    public ResponseEntity<APIResponse<CourseDTO>> findById(
+    @ResponseStatus(HttpStatus.OK)
+    public CourseDTO findById(
             @Parameter(description = "ID of the course") @PathVariable Long courseId) throws HttpRequestException {
-        CourseDTO course = courseService.findById(courseId).toDTO();
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success("Course retrieved.", course));
+        return courseService.findById(courseId).toDTO();
     }
 
     /**
@@ -73,10 +68,10 @@ public class CourseController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<APIResponse<CourseDTO>> create(
+    @ResponseStatus(HttpStatus.CREATED)
+    public CourseDTO create(
             @Valid @RequestBody ManageCourseRequest manageCourseRequest) throws HttpRequestException {
-        CourseDTO course = courseService.create(manageCourseRequest).toDTO();
-        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.success("Course Created.", course));
+        return courseService.create(manageCourseRequest).toDTO();
     }
 
     /**
@@ -91,11 +86,11 @@ public class CourseController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{courseId}")
-    public ResponseEntity<APIResponse<CourseDTO>> update(
+    @ResponseStatus(HttpStatus.OK)
+    public CourseDTO update(
             @Parameter(description = "ID of the course") @PathVariable Long courseId,
             @Valid @RequestBody ManageCourseRequest manageCourseRequest) throws HttpRequestException {
-        CourseDTO course = courseService.update(courseId, manageCourseRequest).toDTO();
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success("Course updated.", course));
+        return courseService.update(courseId, manageCourseRequest).toDTO();
     }
 
     /**
@@ -108,10 +103,11 @@ public class CourseController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{courseId}")
-    public ResponseEntity<APIResponse<NullType>> delete(
+    @ResponseStatus(HttpStatus.OK)
+    public String delete(
             @Parameter(description = "ID of the course") @PathVariable Long courseId) throws HttpRequestException {
         courseService.delete(courseId);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success("Course deleted."));
+        return "Course deleted.";
     }
 
 }
