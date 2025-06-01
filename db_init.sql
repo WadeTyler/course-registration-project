@@ -12,27 +12,29 @@ CREATE TABLE users (
 
 COMMIT;
 
+-- Create the Authorities Table
+CREATE TABLE authorities (
+                             id INT NOT NULL AUTO_INCREMENT,
+                             name VARCHAR(13) NOT NULL,
+                             PRIMARY KEY (id)
+);
+
+INSERT INTO authorities (name) VALUES ('ADMIN');
+INSERT INTO authorities (name) VALUES ('INSTRUCTOR');
+INSERT INTO authorities (name) VALUES ('STUDENT');
+
+COMMIT;
+
 -- Create User Authorities Table
 CREATE TABLE user_authorities (
     user_id INT NOT NULL,
-    authority VARCHAR(255) NOT NULL,
-    PRIMARY KEY (user_id, authority)
+    authority_id INT NOT NULL,
+    PRIMARY KEY (user_id, authority_id)
 );
 
 ALTER TABLE user_authorities ADD CONSTRAINT FK_user_authorities_user_id FOREIGN KEY (user_id) REFERENCES users (id);
-ALTER TABLE user_authorities ADD CONSTRAINT FK_user_authorities_authority_id FOREIGN KEY (authority) REFERENCES authorities (id);
-COMMIT;
+ALTER TABLE user_authorities ADD CONSTRAINT FK_user_authorities_authority_id FOREIGN KEY (authority_id) REFERENCES authorities (id);
 
--- Create the Authorities Table
-CREATE TABLE authorities (
-    id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(13) NOT NULL,
-    PRIMARY KEY (id)
-);
-
-INSERT INTO authorities (name) VALUES ('Administrator');
-INSERT INTO authorities (name) VALUES ('Instructor');
-INSERT INTO authorities (name) VALUES ('Student');
 COMMIT;
 
 -- Create Terms
@@ -78,18 +80,6 @@ ALTER TABLE prerequisites ADD CONSTRAINT FK_prerequisites_requried_course_id FOR
 
 COMMIT;
 
--- Create instructor Table
-CREATE TABLE instructors (
-    id INT NOT NULL AUTO_INCREMENT,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    title VARCHAR(50) NOT NULL,
-    created_at DATE,
-    PRIMARY KEY (id)
-);
-
-COMMIT;
-
 -- Create course_sections Table
 CREATE TABLE course_sections (
     id INT NOT NULL AUTO_INCREMENT,
@@ -107,7 +97,7 @@ CREATE TABLE course_sections (
 -- Add FK Constraints between course_sections, and instructors, terms, and courses
 ALTER TABLE course_sections ADD CONSTRAINT FK_course_sections_course_id FOREIGN KEY (course_id) REFERENCES courses (id);
 ALTER TABLE course_sections ADD CONSTRAINT FK_course_sections_term_id FOREIGN KEY (term_id) REFERENCES terms (id);
-ALTER TABLE course_sections ADD CONSTRAINT FK_course_sections_instructor_id FOREIGN KEY (instructor_id) REFERENCES instructors (id);
+ALTER TABLE course_sections ADD CONSTRAINT FK_course_sections_instructor_id FOREIGN KEY (instructor_id) REFERENCES users (id);
 
 COMMIT;
 
