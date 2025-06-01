@@ -1,5 +1,6 @@
 package net.tylerwade.registrationsystem.term.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 
@@ -21,6 +22,7 @@ public record ManageTermRequest(
         Date registrationEnd
 ) {
 
+    @JsonIgnore
     public boolean isValid() {
         return startDate != null
                 && endDate != null
