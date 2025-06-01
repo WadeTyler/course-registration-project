@@ -54,7 +54,7 @@ public class CourseSectionController {
             @ApiResponse(responseCode = "200", description = "Found"),
             @ApiResponse(responseCode = "404", description = "Section not found.")
     })
-    @GetMapping("/api/sections/{sectionId}")
+    @GetMapping("/{sectionId}")
     @ResponseStatus(HttpStatus.OK)
     public CourseSectionDTO findById(@PathVariable Long sectionId) throws HttpRequestException {
         return courseSectionService.findById(sectionId).toDTO();
