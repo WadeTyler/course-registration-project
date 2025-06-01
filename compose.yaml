@@ -1,0 +1,18 @@
+# Group 3's Docker Compose YAML file for the mySQL Database
+
+services:
+  rru_database:
+    image: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+      - "33060:33060"
+    environment:
+      MYSQL_ROOT_PASSWORD: lkjD3llkjfd9087D
+      MYSQL_DATABASE: register_r_us
+      MYSQL_USER: register_rus_user
+      MYSQL_PASSWORD: lkjasdfoiuLKN98
+    volumes:
+      - ./db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
