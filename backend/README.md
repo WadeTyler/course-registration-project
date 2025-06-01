@@ -3,31 +3,53 @@
 This is the backend service for the Course Registration System. It is built with Java and Spring Boot, providing RESTful APIs for course, enrollment, user authentication, and other registration-related features.
 
 ## How It Works
-- **Framework:** Java 17+, Spring Boot
+- **Framework:** Java 21+, Spring Boot
 - **Database:** Connects to a relational database (see `db_init.sql` for schema)
-- **Authentication:** JWT-based authentication (see `src/main/resources/certs/` for keys)
+- **Authentication:** JWT-based authentication using HS256.
 - **API:** Exposes endpoints for courses, course sections, enrollments, prerequisites, terms, and user management
 - **Configuration:** Main configs in `src/main/resources/application.properties`
 
-## For Frontend Developers
+## API
+- **API Documentation:**
+  - API Documentation with SwaggerUI can be found locally at the endpoint [/api-docs-ui](http://localhost:8484/api-docs-ui) 
 - **API Endpoints:**
   - All endpoints are prefixed with `/api/` (e.g., `/api/courses`, `/api/enrollments`)
-  - Most endpoints require a valid JWT token in the `Authorization` header: `Bearer <token>`
-  - See the backend code for available endpoints and request/response formats
-- **CORS:** CORS is enabled for local frontend development
-- **Error Handling:** Errors are returned as JSON with appropriate HTTP status codes
-- **Running Locally:**
-  - Use `mvnw spring-boot:run` in the `backend/` directory
-  - Configure environment variables or edit `application.properties` as needed
-- **Database:**
-  - The backend expects a running database instance; see `db_init.sql` for setup
-  - Default DB connection settings can be found in `application.properties`
+  - See the API Documentation for available endpoints and payload request/responses.
+- **CORS:** CORS is enabled for local frontend development. CLIENT_URL must be specified as an environmental variable.
+- **Error Handling:** Errors are returned as JSON with appropriate HTTP status codes.
 
 ## Useful Files
 - `src/main/resources/application.properties`: Main configuration
-- `src/main/resources/certs/`: JWT signing keys
 - `db_init.sql`: Database schema and seed data
+- Only files located in `dto` packages will be used for data transfer.
 
-## Contact
-For questions about backend API integration, contact the backend team or check the code for endpoint details.
+## Sample Accounts
+- In development environment, 3 sample accounts are created.
+```angular2html
+Admin Account
+Username: instructor@email.com
+Password: 123456
+```
+```angular2html
+Instructor Account
+Username: instructor@email.com
+Password: 123456
+```
+```angular2html
+Student Account
+Username: student@email.com
+Password: 123456
+```
 
+## API Docs UI - Authentication
+Most endpoints require authentication, and some require specific roles. Here's how to signup or login for testing purposes.
+
+#### Create a new account
+  - Use the `/api/auth/signup` endpoint to create a new account.
+  - Upon success, a JWT token as a cookie will be placed for authentication.
+
+#### Login to an existing account
+  - To Log into an account using the API Docs UI, click on the green `Authorize` button at the top right of the page.
+  - Enter account details and select Authorize.
+  - To then authenticate with the server, use the `/api/auth/login` endpoint. This will place a JWT token as a cookie for authentication upon success.
+  - To logout, use the `/api/auth/logout` endpoint. This will remove the JWT token cookie.
