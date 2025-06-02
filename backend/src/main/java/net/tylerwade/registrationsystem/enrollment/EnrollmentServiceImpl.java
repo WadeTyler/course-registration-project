@@ -6,6 +6,7 @@ import net.tylerwade.registrationsystem.coursesection.CourseSection;
 import net.tylerwade.registrationsystem.coursesection.CourseSectionService;
 import net.tylerwade.registrationsystem.enrollment.dto.CreateEnrollmentRequest;
 import net.tylerwade.registrationsystem.enrollment.dto.ManageEnrollmentRequest;
+import net.tylerwade.registrationsystem.enrollment.enums.EnrollmentStatus;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
 import net.tylerwade.registrationsystem.prerequisites.Prerequisite;
 import org.springframework.http.HttpStatus;
@@ -30,9 +31,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public List<Enrollment> findAllByStudent(Authentication authentication) {
-        Long userId = userService.getUser(authentication).getId();
-        return enrollmentRepository.findAllByStudent_IdOrderByCourseSection_Term_StartDateDesc(userId);
+    public List<Enrollment> findAllByStudent(Long studentId, Authentication authentication) throws HttpRequestException {
+        User authUser = userService.getUser(authentication);
+
+        // Check if authUser is student, or an instructor/admin
+        if (!authUser.getId().equals(studentId) && !authUser.isInstructor() && !authUser.isAdmin()) {
+            throw new HttpRequestException(HttpStatus.FORBIDDEN, "You are not permitted to view this student's enrollment records.");
+        }
+
+        return enrollmentRepository.findAllByStudent_IdOrderByCourseSection_Term_StartDateDesc(studentId);
     }
 
     @Override
@@ -41,9 +48,20 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public Enrollment create(CreateEnrollmentRequest createEnrollmentRequest, Authentication authentication) throws HttpRequestException {
+    public Enrollment create(Long studentId, CreateEnrollmentRequest createEnrollmentRequest, Authentication authentication) throws HttpRequestException {
+
+        User authUser = userService.getUser(authentication);
+
+        // Check if authUser is student, or an admin
+        if (!authUser.getId().equals(studentId) && !authUser.isAdmin()) {
+            throw new HttpRequestException(HttpStatus.FORBIDDEN, "You are not permitted to create enrollments for this student.");
+        }
+
         // Get student
-        User student = userService.getUser(authentication);
+        User student = userService.findById(studentId);
+        if (!student.isStudent()) {
+            throw new HttpRequestException(HttpStatus.FORBIDDEN, "User must be a student to enroll in a course section.");
+        }
 
         // Find target course section
         CourseSection courseSection = courseSectionService.findById(createEnrollmentRequest.courseSectionId());
@@ -100,7 +118,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .courseSectionId(courseSection.getId())
                 .courseSection(courseSection)
                 .grade(new BigDecimal(0))
-                .status("NOT_STARTED")
+                .status(EnrollmentStatus.NOT_STARTED.getValue())
                 .build();
 
 
@@ -126,7 +144,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         // Update
         enrollment.setGrade(manageEnrollmentRequest.grade());
-        enrollment.setStatus(manageEnrollmentRequest.status());
+        enrollment.setStatus(manageEnrollmentRequest.status().getValue());
 
         // save and return
         return enrollmentRepository.save(enrollment);
@@ -150,7 +168,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         // Check if enrollment has already completed
-        if (enrollment.getStatus().equals("COMPLETED")) {
+        if (enrollment.getStatus().equals(EnrollmentStatus.COMPLETED.getValue())) {
             throw new HttpRequestException(HttpStatus.NOT_ACCEPTABLE, "You have already completed this course.");
         }
 
@@ -160,8 +178,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public int updateStartedEnrollments() {
-        List<Enrollment> unupdatedStartedEnrollments = enrollmentRepository.findAllByStatusIsAndCourseSection_Term_StartDateBefore("NOT_STARTED", new Date(System.currentTimeMillis()));
-        unupdatedStartedEnrollments.forEach(enrollment -> enrollment.setStatus("STARTED"));
+        List<Enrollment> unupdatedStartedEnrollments = enrollmentRepository.findAllByStatusIsAndCourseSection_Term_StartDateBefore(EnrollmentStatus.NOT_STARTED.getValue(), new Date(System.currentTimeMillis()));
+        unupdatedStartedEnrollments.forEach(enrollment -> enrollment.setStatus(EnrollmentStatus.STARTED.getValue()));
         enrollmentRepository.saveAll(unupdatedStartedEnrollments);
 
         return unupdatedStartedEnrollments.size();

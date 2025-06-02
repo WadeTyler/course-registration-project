@@ -20,7 +20,7 @@ public interface EnrollmentService {
      * @param authentication the authentication object
      * @return list of enrollments
      */
-    List<Enrollment> findAllByStudent(Authentication authentication);
+    List<Enrollment> findAllByStudent(Long studentId, Authentication authentication) throws HttpRequestException;
 
     /**
      * Finds all enrollments for a student by their ID.
@@ -33,12 +33,13 @@ public interface EnrollmentService {
     /**
      * Creates a new enrollment for the authenticated student.
      *
+     * @param studentId               the target student ID
      * @param createEnrollmentRequest the enrollment request
      * @param authentication          the authentication object
      * @return the created enrollment
      * @throws HttpRequestException if the enrollment cannot be created
      */
-    Enrollment create(CreateEnrollmentRequest createEnrollmentRequest, Authentication authentication) throws HttpRequestException;
+    Enrollment create(Long studentId, CreateEnrollmentRequest createEnrollmentRequest, Authentication authentication) throws HttpRequestException;
 
     /**
      * Updates an existing enrollment.

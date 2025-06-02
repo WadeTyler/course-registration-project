@@ -30,34 +30,36 @@ public class EnrollmentController {
     /**
      * Find all enrollments for the authenticated student
      */
-    @Operation(summary = "Get all enrollments for student", description = "Returns a list of all enrollments for the authenticated student.")
+    @Operation(summary = "Get all enrollments for student", description = "Returns a list of all enrollments for the student. The authUser must contain the studentId or be an administrator/instructor.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Enrollments retrieved successfully")
     })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EnrollmentDTO> findAllByStudent(Authentication authentication) {
-        return enrollmentService.findAllByStudent(authentication).stream().map(Enrollment::toDTO).toList();
+    public List<EnrollmentDTO> findAllByStudent(@RequestParam Long studentId, Authentication authentication) throws HttpRequestException {
+        return enrollmentService.findAllByStudent(studentId, authentication).stream().map(Enrollment::toDTO).toList();
     }
 
     /**
      * Create a new enrollment
      */
-    @Operation(summary = "Create enrollment", description = "Creates a new enrollment for the authenticated student.")
+    @Operation(summary = "Create enrollment", description = "Creates a new enrollment for the authenticated student. The authUser must be the student or an administrator.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Enrollment created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EnrollmentDTO create(Authentication authentication, @Valid @RequestBody CreateEnrollmentRequest createEnrollmentRequest) throws HttpRequestException {
-        return enrollmentService.create(createEnrollmentRequest, authentication).toDTO();
+    public EnrollmentDTO create(@RequestParam Long studentId,
+                                Authentication authentication,
+                                @Valid @RequestBody CreateEnrollmentRequest createEnrollmentRequest) throws HttpRequestException {
+        return enrollmentService.create(studentId, createEnrollmentRequest, authentication).toDTO();
     }
 
     /**
      * Remove an enrollment
      */
-    @Operation(summary = "Delete enrollment", description = "Deletes an enrollment for the authenticated student.")
+    @Operation(summary = "Delete enrollment", description = "Deletes an enrollment for the authenticated student. The authUser must be the student, the instructor for the course section, or an administrator.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Enrollment deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Enrollment not found")
