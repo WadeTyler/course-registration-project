@@ -1,7 +1,7 @@
 package net.tylerwade.registrationsystem.config.security;
 
+import lombok.RequiredArgsConstructor;
 import net.tylerwade.registrationsystem.config.security.jwt.JwtCookieToAuthorizationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,18 +18,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter;
     private final JwtAuthenticationConverter jwtAuthenticationConverter;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
-
-    @Autowired
-    public SecurityConfig(JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter, JwtAuthenticationConverter jwtAuthenticationConverter, CustomAccessDeniedHandler customAccessDeniedHandler) {
-        this.jwtCookieToAuthorizationFilter = jwtCookieToAuthorizationFilter;
-        this.jwtAuthenticationConverter = jwtAuthenticationConverter;
-        this.customAccessDeniedHandler = customAccessDeniedHandler;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,7 +36,8 @@ public class SecurityConfig {
                 .addFilterBefore(jwtCookieToAuthorizationFilter, BearerTokenAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         // Doc Routes
-                        .requestMatchers("/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api-docs-ui").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
+                                "/api-docs-ui", "/javadoc/**", "/javadoc").permitAll()
 
                         // Public Routes
                         .requestMatchers("/api/auth/signup").permitAll()

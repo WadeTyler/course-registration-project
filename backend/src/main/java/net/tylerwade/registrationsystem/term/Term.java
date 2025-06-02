@@ -8,6 +8,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
+/**
+ * Represents a term entity in the registration system.
+ * Contains details about the term's start and end dates, registration period, and creation timestamp.
+ */
 @Entity
 @Table(name = "terms")
 @Getter
@@ -18,25 +22,50 @@ import java.util.Date;
 @Builder
 public class Term {
 
+    /**
+     * Unique identifier for the term.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The start date of the term.
+     */
     @Column(nullable = false)
     private Date startDate;
 
+    /**
+     * The end date of the term.
+     */
     @Column(nullable = false)
     private Date endDate;
 
+    /**
+     * The start date for registration during the term.
+     */
     @Column(nullable = false)
     private Date registrationStart;
 
+    /**
+     * The end date for registration during the term.
+     */
     @Column(nullable = false)
     private Date registrationEnd;
 
+    /**
+     * Timestamp indicating when the term was created.
+     * Automatically populated during creation.
+     */
     @CreatedDate
     private Date createdAt;
 
+    /**
+     * Converts the Term entity to a TermDTO object.
+     * Includes details about the term's dates and registration period.
+     *
+     * @return A TermDTO representation of the term.
+     */
     public TermDTO toDTO() {
         return new TermDTO(id,
                 startDate,
@@ -46,11 +75,21 @@ public class Term {
                 createdAt);
     }
 
+    /**
+     * Checks if the registration period for the term is currently open.
+     *
+     * @return True if the registration period is open, false otherwise.
+     */
     public boolean isRegistrationOpen() {
         Date now = new Date(System.currentTimeMillis());
         return (registrationStart.before(now) || registrationStart.equals(now)) && (registrationEnd.after(now) || registrationEnd.equals(now));
     }
 
+    /**
+     * Checks if the term has ended.
+     *
+     * @return True if the term has ended, false otherwise.
+     */
     public boolean hasEnded() {
         Date now = new Date(System.currentTimeMillis());
         return now.after(endDate);
