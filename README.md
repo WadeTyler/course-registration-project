@@ -46,5 +46,5 @@ CLIENT_URL=http://localhost:5173
   docker compose down
   ```
 
-For more details, see the `backend/README.md` and `compose.yaml` files.
+For more details, see the [backend/README.md](./backend/README.md) and `compose.yaml` files.
 
