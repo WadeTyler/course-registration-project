@@ -24,6 +24,7 @@ public class SecurityConfig {
     private final JwtCookieToAuthorizationFilter jwtCookieToAuthorizationFilter;
     private final JwtAuthenticationConverter jwtAuthenticationConverter;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -49,9 +50,10 @@ public class SecurityConfig {
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter)
                         )
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
                         .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .httpBasic(basic -> basic
