@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import '../shake.css'; // make sure this file exists and defines the “shake” animation
+import '../shake.css';
 
 // List of all possible widgets
 const widgetOptions = [
@@ -69,7 +69,6 @@ const Dashboard: React.FC = () => {
         setShowModal(false);
     };
 
-    // Just filter out the removed widget—no compaction occurs
     const removeWidget = (widgetKey: string) => {
         setLayout((prev) => prev.filter((w) => w.i !== widgetKey));
         // Leave removeMode = true so you can remove multiple in succession,
@@ -77,7 +76,6 @@ const Dashboard: React.FC = () => {
         // setRemoveMode(false);
     };
 
-    // Keep our layout state in sync when user drags or resizes
     const handleLayoutChange = (newLayout: Layout[]) => {
         setLayout(newLayout);
     };
