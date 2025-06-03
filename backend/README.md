@@ -17,6 +17,7 @@ This is the backend service for the Course Registration System. It is built with
   - See the API Documentation for available endpoints and payload request/responses.
 - **CORS:** CORS is enabled for local frontend development. CLIENT_URL must be specified as an environmental variable.
 - **Error Handling:** Errors are returned as JSON with appropriate HTTP status codes.
+- **Credentials:** All Authenticated endpoints must `include` credentials.
 
 ## Useful Files
 - `src/main/resources/application.properties`: Main configuration
