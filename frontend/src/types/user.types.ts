@@ -1,28 +1,34 @@
-// Auth and User types
 
-// Valid user roles
-export const UserRole = {
-  ADMIN: "ROLE_ADMIN",
-  INSTRUCTOR: "ROLE_INSTRUCTOR",
-  STUDENT: "ROLE_STUDENT"
+/*
+ * user authorities
+ */
+export interface Authority {
+  id: number;
+  name: "ADMIN" | "INSTRUCTOR" | "STUDENT";
 }
 
-// user fields
+/*
+ * user fields
+ */
 export type User = {
   id: number;
   username: string;
   firstName: string;
   lastName: string;
-  grantedAuthorities: string[];
+  userAuthorities: Authority[];
   createdAt: string;
 }
 
-// User Fields that can be changed by an admin
+/*
+ * User Fields that can be changed by an admin
+ */
 export interface UpdateUserRequest {
-  role: "ROLE_ADMIN" | "ROLE_INSTRUCTOR" | "ROLE_STUDENT"
+  role:  "ADMIN" | "INSTRUCTOR" | "STUDENT";
 }
 
-// Required fields for signup
+/*
+ * Required fields for signup
+ */
 export interface SignupRequest {
   username: string;
   firstName: string;

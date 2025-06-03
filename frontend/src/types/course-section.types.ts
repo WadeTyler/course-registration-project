@@ -3,7 +3,9 @@ import type {Term} from "./term.types.ts";
 import type {User} from "./user.types.ts";
 import type {InstructorEnrollment} from "./enrollment.types.ts";
 
-// Course section fields
+/*
+ * Course section fields
+ */
 export interface CourseSection {
   id: number;
   course: CourseAttributes;
@@ -16,7 +18,9 @@ export interface CourseSection {
   createdAt: string;
 }
 
-// Course section fields for an instructor assigned course section
+/*
+ * Course section fields for an instructor assigned course section
+ */
 export interface InstructorCourseSection {
   id: number;
   course: CourseAttributes;
@@ -30,7 +34,9 @@ export interface InstructorCourseSection {
   createdAt: string;
 }
 
-// Required fields to update or create a course section.
+/*
+ * Required fields to update or create a course section.
+ */
 export type ManageCourseSectionRequest = {
   termId: number;
   instructorId: number;
