@@ -48,16 +48,11 @@ public class PrerequisiteServiceImpl implements PrerequisiteService{
     }
 
     @Override
-    public Prerequisite update(Long courseId, Long prerequisiteId, ManagePrerequisiteRequest managePrerequisiteRequest) throws HttpRequestException {
+    public Prerequisite update(Long prerequisiteId, ManagePrerequisiteRequest managePrerequisiteRequest) throws HttpRequestException {
 
         // Find target prerequisite
         Prerequisite prerequisite = prerequisiteRepository.findById(prerequisiteId)
                 .orElseThrow(() -> new HttpRequestException(HttpStatus.NOT_FOUND, "Prerequisite not found."));
-
-        // Check if prerequisite already exists for course and required course and is not the target one.
-        if (prerequisiteRepository.existsByCourse_IdAndRequiredCourse_IdAndIdNot(courseId, managePrerequisiteRequest.requiredCourseId(), prerequisiteId)) {
-            throw new HttpRequestException(HttpStatus.CONFLICT, "A prerequisite already exists with that required course.");
-        }
 
         // Update
         prerequisite.setMinimumGrade(managePrerequisiteRequest.minimumGrade());

@@ -73,7 +73,7 @@ public class PrerequisiteController {
             @Parameter(description = "ID of the course") @PathVariable Long courseId,
             @Parameter(description = "ID of the prerequisite") @PathVariable Long prerequisiteId,
             @Valid @RequestBody ManagePrerequisiteRequest managePrerequisiteRequest) throws HttpRequestException {
-        return prerequisiteService.update(courseId, prerequisiteId, managePrerequisiteRequest).toDTO();
+        return prerequisiteService.update(prerequisiteId, managePrerequisiteRequest).toDTO();
     }
 
     /**
