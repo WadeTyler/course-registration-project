@@ -6,6 +6,7 @@ import net.tylerwade.registrationsystem.term.dto.TermDTO;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -33,25 +34,25 @@ public class Term {
      * The start date of the term.
      */
     @Column(nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     /**
      * The end date of the term.
      */
     @Column(nullable = false)
-    private Date endDate;
+    private LocalDate endDate;
 
     /**
      * The start date for registration during the term.
      */
     @Column(nullable = false)
-    private Date registrationStart;
+    private LocalDate registrationStart;
 
     /**
      * The end date for registration during the term.
      */
     @Column(nullable = false)
-    private Date registrationEnd;
+    private LocalDate registrationEnd;
 
     /**
      * Timestamp indicating when the term was created.
@@ -81,8 +82,8 @@ public class Term {
      * @return True if the registration period is open, false otherwise.
      */
     public boolean isRegistrationOpen() {
-        Date now = new Date(System.currentTimeMillis());
-        return (registrationStart.before(now) || registrationStart.equals(now)) && (registrationEnd.after(now) || registrationEnd.equals(now));
+        var now = LocalDate.now();
+        return (registrationStart.isBefore(now) || registrationStart.equals(now)) && (registrationEnd.isAfter(now) || registrationEnd.equals(now));
     }
 
     /**
@@ -91,7 +92,7 @@ public class Term {
      * @return True if the term has ended, false otherwise.
      */
     public boolean hasEnded() {
-        Date now = new Date(System.currentTimeMillis());
-        return now.after(endDate);
+        var now = LocalDate.now();
+        return now.isAfter(endDate);
     }
 }

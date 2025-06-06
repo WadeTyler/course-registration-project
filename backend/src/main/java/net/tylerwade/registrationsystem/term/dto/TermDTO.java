@@ -1,13 +1,14 @@
 package net.tylerwade.registrationsystem.term.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public record TermDTO(
         Long id,
-        Date startDate,
-        Date endDate,
-        Date registrationStart,
-        Date registrationEnd,
+        LocalDate startDate,
+        LocalDate endDate,
+        LocalDate registrationStart,
+        LocalDate registrationEnd,
         Date createdAt
 ) {
 }

@@ -4,22 +4,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record ManageTermRequest(
         @NotNull(message = "Term start date is required")
         @FutureOrPresent(message = "Term start date must be today or in the future")
-        Date startDate,
+        LocalDate startDate,
 
         @NotNull(message = "Term end date is required")
-        Date endDate,
+        LocalDate endDate,
 
         @NotNull(message = "Registration start date is required")
         @FutureOrPresent(message = "Registration start date must be today or in the future")
-        Date registrationStart,
+        LocalDate registrationStart,
 
         @NotNull(message = "Registration end date is required")
-        Date registrationEnd
+        LocalDate registrationEnd
 ) {
 
     @JsonIgnore
@@ -28,9 +28,9 @@ public record ManageTermRequest(
                 && endDate != null
                 && registrationStart != null
                 && registrationEnd != null
-                && endDate.after(startDate)
-                && registrationEnd.after(registrationStart)
-                && (registrationEnd.before(startDate) || registrationEnd.equals(startDate));
+                && endDate.isAfter(startDate)
+                && registrationEnd.isAfter(registrationStart)
+                && (registrationEnd.isBefore(startDate) || registrationEnd.equals(startDate));
     }
 
 }
