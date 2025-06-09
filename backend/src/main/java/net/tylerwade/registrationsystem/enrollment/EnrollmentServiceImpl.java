@@ -14,7 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -178,7 +178,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public int updateStartedEnrollments() {
-        List<Enrollment> unupdatedStartedEnrollments = enrollmentRepository.findAllByStatusIsAndCourseSection_Term_StartDateBefore(EnrollmentStatus.NOT_STARTED.getValue(), new Date(System.currentTimeMillis()));
+        List<Enrollment> unupdatedStartedEnrollments = enrollmentRepository.findAllByStatusIsAndCourseSection_Term_StartDateBefore(EnrollmentStatus.NOT_STARTED.getValue(), LocalDate.now());
         unupdatedStartedEnrollments.forEach(enrollment -> enrollment.setStatus(EnrollmentStatus.STARTED.getValue()));
         enrollmentRepository.saveAll(unupdatedStartedEnrollments);
 
