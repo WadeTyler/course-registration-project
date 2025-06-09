@@ -33,13 +33,12 @@ public interface PrerequisiteService {
     /**
      * Updates an existing prerequisite for a course.
      *
-     * @param courseId the ID of the course
-     * @param prerequisiteId the ID of the prerequisite to update
+     * @param prerequisiteId            the ID of the prerequisite to update
      * @param managePrerequisiteRequest the request data for the prerequisite
      * @return the updated prerequisite
      * @throws HttpRequestException if update fails
      */
-    Prerequisite update(Long courseId, Long prerequisiteId, ManagePrerequisiteRequest managePrerequisiteRequest) throws HttpRequestException;
+    Prerequisite update(Long prerequisiteId, ManagePrerequisiteRequest managePrerequisiteRequest) throws HttpRequestException;
 
     /**
      * Deletes a prerequisite by its ID.

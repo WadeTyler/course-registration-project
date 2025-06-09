@@ -5,11 +5,9 @@ import net.tylerwade.registrationsystem.exception.HttpRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -28,12 +26,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course findById(Long courseId) throws HttpRequestException {
         return courseRepository.findById(courseId).orElseThrow(() -> new HttpRequestException(HttpStatus.NOT_FOUND, "Course not found."));
-    }
-
-    @Override
-    public List<Course> findAssignedCourses(Authentication authentication) {
-        // TODO: Implement findAssignedCourses
-        return List.of();
     }
 
     @Override
