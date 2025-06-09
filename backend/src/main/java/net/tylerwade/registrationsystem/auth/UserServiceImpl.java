@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -86,7 +88,8 @@ public class UserServiceImpl implements UserService {
         // If updating role
         if (updateUserRequest.role() != null) {
             Authority authority = authorityService.findByName(updateUserRequest.role());
-            targetUser.setUserAuthorities(Set.of(authority));
+            // Use a mutable set instead of an immutable one
+            targetUser.setUserAuthorities(new HashSet<>(Collections.singletonList(authority)));
         }
 
         // Save and return

@@ -1,25 +1,28 @@
 // src/page/Dashboard.tsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
+import type {Layout} from 'react-grid-layout';
 import GridLayout from 'react-grid-layout';
-import type { Layout } from 'react-grid-layout';
 import {
-    GraduationCap,
-    CreditCard,
-    User,
-    BookOpen,
-    LayoutDashboard,
-    Calendar,
-    Plus,
-    Minus,
-    LayoutTemplate,
-    Settings,
-    LogOut,
     Bell,
+    BookOpen,
+    Calendar,
+    CreditCard,
+    GraduationCap,
+    LayoutDashboard,
+    LayoutTemplate,
+    LogOut,
+    Minus,
+    Plus,
+    Settings,
+    User,
 } from 'lucide-react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import '../shake.css';
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {logout} from "../features/auth/auth.api.ts";
+import Loader from "../components/Loader.tsx";
 
 // List of all possible widgets
 const widgetOptions = [
@@ -34,6 +37,7 @@ const widgetOptions = [
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     // Keep track of each widget's x, y, w, h
     const [layout, setLayout] = useState<Layout[]>([
@@ -80,9 +84,18 @@ const Dashboard: React.FC = () => {
         setLayout(newLayout);
     };
 
-    const handleSignOut = () => {
-        navigate('/');
-    };
+    /// Signout functionality
+    const {mutate:signoutMutation, isPending:isSigningOut} = useMutation({
+        mutationFn: logout,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['authUser']});
+            navigate("/");
+        }
+    });
+
+    function handleSignOut() {
+        signoutMutation();
+    }
 
     return (
         <div className="flex min-h-screen bg-gray-100">
@@ -133,9 +146,10 @@ const Dashboard: React.FC = () => {
 
             <button
                 onClick={handleSignOut}
+                disabled={isSigningOut}
                 className="flex items-center gap-2 bg-blue-800 hover:bg-blue-600 p-2 rounded"
             >
-                <LogOut size={18} /> Sign Out
+                {isSigningOut ? <Loader /> : (<><LogOut size={18} /> Sign Out</>)}
             </button>
             </nav>
         </aside>

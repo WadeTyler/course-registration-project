@@ -45,5 +45,6 @@ services:
       SERVER_PORT: ${SERVER_PORT}
       JWT_SECRET: ${JWT_SECRET}
       JWT_ISSUER: ${JWT_ISSUER}
+      CLIENT_URL: ${CLIENT_URL}
     extra_hosts:
       - "host.docker.internal:host-gateway"
