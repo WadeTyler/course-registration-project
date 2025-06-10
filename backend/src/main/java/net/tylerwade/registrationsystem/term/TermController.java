@@ -5,16 +5,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import net.tylerwade.registrationsystem.common.PageResponse;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
 import net.tylerwade.registrationsystem.term.dto.ManageTermRequest;
 import net.tylerwade.registrationsystem.term.dto.TermDTO;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Term Controller", description = "Operations related to terms.")
 @RestController
@@ -28,13 +26,12 @@ public class TermController {
     }
 
     // Find all terms
-    @Operation(summary = "Find all terms.", description = "Returns a PageResponse of terms.")
+    @Operation(summary = "Find all terms.", description = "Returns a List of terms.")
     @ApiResponse(responseCode = "200", description = "Terms retrieved.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<TermDTO> findAll(@ParameterObject Pageable pageable) {
-        Page<TermDTO> page = termService.findAll(pageable).map(Term::toDTO);
-        return PageResponse.convertPage(page);
+    public List<TermDTO> findAll() {
+        return termService.findAll().stream().map(Term::toDTO).toList();
     }
 
     // Find Specific term
