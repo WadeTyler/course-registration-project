@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {signup} from "../features/auth/auth.api.ts";
+import type {User} from "../types/user.types.ts";
+import Loader from "../components/Loader.tsx";
 
 const SignUp: React.FC = () => {
     const [step, setStep] = useState(1);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const [passwordChecks, setPasswordChecks] = useState({
         length: false,
@@ -40,19 +43,31 @@ const SignUp: React.FC = () => {
         setError('');
         setSuccess('');
 
-        if (!firstName || !lastName || !username || !email) {
+        if (!firstName || !lastName || !username) {
             setError('Please fill in all fields.');
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(username)) {
             setError('Please enter a valid email address.');
             return;
         }
 
         setStep(2);
     };
+
+    // Handle signup
+    const {mutate:signupMutation, isPending: isSigningUp} = useMutation({
+        mutationFn: signup,
+        onSuccess: async (user: User) => {
+          queryClient.setQueryData(['authUser'], user);
+          navigate("/dashboard");
+        },
+        onError: (e) => {
+          setError((e as Error).message);
+        }
+    })
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -78,24 +93,7 @@ const SignUp: React.FC = () => {
             return;
         }
 
-        setIsLoading(true);
-
-        try {
-            // TODO: Replace with actual API call
-            await new Promise(resolve => setTimeout(resolve, 1000)); // mock delay
-
-            console.log("Form submitted:", {
-                firstName, lastName, username, email, password,
-            });
-
-            setSuccess("Account created successfully!");
-            setTimeout(() => navigate("/dashboard"), 1500);
-        } catch (err) {
-            console.error(err);
-            setError("Something went wrong. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
+        signupMutation({firstName, lastName, username, password, confirmPassword});
     };
 
     return (
@@ -142,21 +140,10 @@ const SignUp: React.FC = () => {
                         <label>
                             <input
                                 type="text"
-                                placeholder="Username"
+                                placeholder="Email"
                                 className="border border-gray-300 rounded px-4 py-2 w-full"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                required
-                                aria-label="Username"
-                            />
-                        </label>
-                        <label>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                className="border border-gray-300 rounded px-4 py-2 w-full"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
                                 required
                                 aria-label="Email"
                             />
@@ -240,9 +227,9 @@ const SignUp: React.FC = () => {
                         <button
                             type="submit"
                             className="bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-                            disabled={isLoading}
+                            disabled={isSigningUp}
                         >
-                            {isLoading ? 'Signing Up...' : 'Sign Up'}
+                            {isSigningUp ? <Loader /> : 'Sign Up'}
                         </button>
                     </form>
                 )}

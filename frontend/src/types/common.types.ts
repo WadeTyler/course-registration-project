@@ -19,3 +19,9 @@ export interface PageResponse<T> {
   totalElements: number;
   totalPages: number;
 }
+
+export interface Pageable {
+  page?: number;
+  size?: number;
+  sort?: "asc" | "desc";
+}

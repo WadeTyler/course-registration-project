@@ -2,9 +2,9 @@ package net.tylerwade.registrationsystem.term;
 
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
 import net.tylerwade.registrationsystem.term.dto.ManageTermRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service interface for managing academic terms.
@@ -13,12 +13,11 @@ import org.springframework.stereotype.Service;
 public interface TermService {
 
     /**
-     * Retrieves a paginated list of all terms.
+     * Retrieves a list of all terms.
      *
-     * @param pageable the pagination information
      * @return a page of terms
      */
-    Page<Term> findAll(Pageable pageable);
+    List<Term> findAll();
 
     /**
      * Finds a term by its ID.

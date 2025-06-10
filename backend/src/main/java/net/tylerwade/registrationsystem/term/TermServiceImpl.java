@@ -2,10 +2,10 @@ package net.tylerwade.registrationsystem.term;
 
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
 import net.tylerwade.registrationsystem.term.dto.ManageTermRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TermServiceImpl implements TermService{
@@ -18,8 +18,8 @@ public class TermServiceImpl implements TermService{
 
 
     @Override
-    public Page<Term> findAll(Pageable pageable) {
-        return termRepository.findAll(pageable);
+    public List<Term> findAll() {
+        return termRepository.findAll();
     }
 
     @Override
