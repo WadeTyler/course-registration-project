@@ -1,7 +1,7 @@
-import type {AxiosError, AxiosResponse} from "axios";
+import type {AxiosResponse} from "axios";
 import type {ManageTermRequest, Term} from "../../types/term.types.ts";
-import type {ErrorResponse} from "../../types/common.types.ts";
 import {axiosInstance} from "../../config/axios.config.ts";
+import {handleApiError} from "../../lib/util/api.util.ts";
 
 /**
  * Query to Retrieve all terms
@@ -13,7 +13,7 @@ export async function getAllTerms(): Promise<Term[]> {
     const response: AxiosResponse<Term[]> = await axiosInstance.get("/terms");
     return response.data;
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
 
@@ -27,7 +27,7 @@ export async function getTermById({termId}: { termId: number }): Promise<Term> {
     const response: AxiosResponse<Term> = await axiosInstance.get(`/terms/${termId}`);
     return response.data;
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
 
@@ -42,7 +42,7 @@ export async function createTerm(manageTermRequest: ManageTermRequest): Promise<
     const response: AxiosResponse<Term> = await axiosInstance.post(`/terms`, manageTermRequest);
     return response.data;
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
 
@@ -61,7 +61,7 @@ export async function updateTerm({termId, manageTermRequest}: {
     const response: AxiosResponse<Term> = await axiosInstance.put(`/terms/${termId}`, manageTermRequest);
     return response.data;
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
 
@@ -74,7 +74,7 @@ export async function deleteTerm({termId}: { termId: number }): Promise<void> {
   try {
     await axiosInstance.delete(`/terms/${termId}`);
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
 

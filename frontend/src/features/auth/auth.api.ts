@@ -2,6 +2,7 @@ import {axiosInstance} from "../../config/axios.config.ts";
 import type {SignupRequest, User} from "../../types/user.types.ts";
 import type {AxiosError, AxiosResponse} from "axios";
 import type {ErrorResponse, PageResponse} from "../../types/common.types.ts";
+import {handleApiError} from "../../lib/util/api.util.ts";
 
 /**
  * Retrieves the authenticated user.
@@ -51,7 +52,7 @@ export async function logout(): Promise<void> {
   try {
     await axiosInstance.post("/auth/logout");
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
 
@@ -66,7 +67,7 @@ export async function signup(signupRequest: SignupRequest): Promise<User> {
     const response = await axiosInstance.post("/auth/signup", signupRequest);
     return response.data;
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
 
@@ -96,7 +97,7 @@ export async function getAllUsers({page, size, sort, search}: {
     });
     return response.data;
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
 
@@ -112,6 +113,6 @@ export async function updateUserAsAdmin({userId, role}: {userId: number, role: "
     const response: AxiosResponse<User> = await axiosInstance.put(`/auth/users/${userId}`, {role});
     return response.data;
   } catch (e) {
-    throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
+    handleApiError(e);
   }
 }
