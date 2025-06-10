@@ -6,6 +6,7 @@ import {axiosInstance} from "../../config/axios.config.ts";
 /**
  * Query to Retrieve all terms
  * @return A list of all terms
+ * @throws Error
  */
 export async function getAllTerms(): Promise<Term[]> {
   try {
@@ -19,6 +20,7 @@ export async function getAllTerms(): Promise<Term[]> {
 /**
  * Query to Retrieve a term by Id.
  * @return the requested term
+ * @throws Error
  */
 export async function getTermById({termId}: { termId: number }): Promise<Term> {
   try {
@@ -33,6 +35,7 @@ export async function getTermById({termId}: { termId: number }): Promise<Term> {
  * Mutation function to create a new term. Must be admin.
  * @param manageTermRequest the object containing the new term data.
  * @return the newly created term.
+ * @throws Error
  */
 export async function createTerm(manageTermRequest: ManageTermRequest): Promise<Term> {
   try {
@@ -48,6 +51,7 @@ export async function createTerm(manageTermRequest: ManageTermRequest): Promise<
  * @param termId the target term to update
  * @param manageTermRequest the object containing the new term data.
  * @return the newly updated term.
+ * @throws Error
  */
 export async function updateTerm({termId, manageTermRequest}: {
   termId: number,
@@ -64,6 +68,7 @@ export async function updateTerm({termId, manageTermRequest}: {
 /**
  * Mutation function to delete a term
  * @param termId  the targeted term to delete
+ * @throws Error
  */
 export async function deleteTerm({termId}: { termId: number }): Promise<void> {
   try {

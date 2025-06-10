@@ -45,6 +45,7 @@ export async function login({username, password}: { username: string, password: 
 /**
  * Logout mutation.
  * @return logout confirmation string
+ * @throws Error
  */
 export async function logout(): Promise<void> {
   try {
@@ -58,6 +59,7 @@ export async function logout(): Promise<void> {
  * Signup mutation. Handles signup.
  * @param signupRequest the signup request data.
  * @return the authenticated user
+ * @throws Error
  */
 export async function signup(signupRequest: SignupRequest): Promise<User> {
   try {
@@ -75,6 +77,7 @@ export async function signup(signupRequest: SignupRequest): Promise<User> {
  * @param sort the direction to sort
  * @param search search fields (email/username, firstName, lastName)
  * @return a PageResponse containing users.
+ * @throws Error
  */
 export async function getAllUsers({page, size, sort, search}: {
   page: number,
@@ -102,6 +105,7 @@ export async function getAllUsers({page, size, sort, search}: {
  * @param userId  target user's ID
  * @param role  target user's new role. Must be 'ADMIN' or 'INSTRUCTOR' or 'STUDENT'
  * @return the updated user.
+ * @throws Error
  */
 export async function updateUserAsAdmin({userId, role}: {userId: number, role: "ADMIN" | "INSTRUCTOR" | "STUDENT"}): Promise<User>  {
   try {
