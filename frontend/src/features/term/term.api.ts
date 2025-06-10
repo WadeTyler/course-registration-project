@@ -20,7 +20,7 @@ export async function getAllTerms(): Promise<Term[]> {
  * Query to Retrieve a term by Id.
  * @return the requested term
  */
-export async function getTermById({termId}: {termId: string}): Promise<Term> {
+export async function getTermById({termId}: { termId: number }): Promise<Term> {
   try {
     const response: AxiosResponse<Term> = await axiosInstance.get(`/terms/${termId}`);
     return response.data;
@@ -45,12 +45,16 @@ export async function createTerm(manageTermRequest: ManageTermRequest): Promise<
 
 /**
  * Mutation function to update a term. Must be admin.
+ * @param termId the target term to update
  * @param manageTermRequest the object containing the new term data.
  * @return the newly updated term.
  */
-export async function updateTerm(manageTermRequest: ManageTermRequest): Promise<Term> {
+export async function updateTerm({termId, manageTermRequest}: {
+  termId: number,
+  manageTermRequest: ManageTermRequest
+}): Promise<Term> {
   try {
-    const response: AxiosResponse<Term> = await axiosInstance.put(`/terms`, manageTermRequest);
+    const response: AxiosResponse<Term> = await axiosInstance.put(`/terms/${termId}`, manageTermRequest);
     return response.data;
   } catch (e) {
     throw new Error((e as AxiosError<ErrorResponse>).response?.data.message || "Something went wrong. Try again later.");
@@ -61,7 +65,7 @@ export async function updateTerm(manageTermRequest: ManageTermRequest): Promise<
  * Mutation function to delete a term
  * @param termId  the targeted term to delete
  */
-export async function deleteTerm({termId}: {termId: string}): Promise<void> {
+export async function deleteTerm({termId}: { termId: number }): Promise<void> {
   try {
     await axiosInstance.delete(`/terms/${termId}`);
   } catch (e) {
