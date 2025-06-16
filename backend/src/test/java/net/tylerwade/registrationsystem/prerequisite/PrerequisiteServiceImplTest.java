@@ -158,7 +158,7 @@ public class PrerequisiteServiceImplTest {
     }
 
     @Test
-    void update_Found_ThrowsHttpRequestException() throws HttpRequestException {
+    void update_Found_ReturnsUpdatedPrerequisite() throws HttpRequestException {
         // Arrange
 
         var prerequisiteId = 1L;

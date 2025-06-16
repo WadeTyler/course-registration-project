@@ -182,7 +182,7 @@ public class EnrollmentServiceImplTest {
     }
 
     @Test
-    void findAllByStudent_AsInstructor_ValidStudent_ReturnsEnrollments() throws HttpRequestException {
+    void findAllByStudent_AsInstructor_ValidInstructor_ReturnsEnrollments() throws HttpRequestException {
         // Arrange
         Long studentId = 3L;
         User instructorUser = mockUsers.get(1); // The instructor user
