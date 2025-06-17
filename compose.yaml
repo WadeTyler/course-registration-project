@@ -1,7 +1,9 @@
 # Group 3's Docker Compose YAML file for the mySQL Database
 
+name: register-r-us
 services:
   rru_database:
+    container_name: rru_database
     image: mysql
     restart: always
     ports:
@@ -14,5 +16,35 @@ services:
       MYSQL_PASSWORD: lkjasdfoiuLKN98
     volumes:
       - ./db_init.sql:/docker-entrypoint-initdb.d/db_init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+      start_period: 20s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Spring boot server
+  backend:
+    build: ./backend
+    container_name: rru_backend
+    restart: unless-stopped
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      rru_database:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      DB_USER: ${DB_USER}
+      DB_NAME: ${DB_NAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+      DB_URL: ${DB_URL}
+      SERVER_PORT: ${SERVER_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER}
+      CLIENT_URL: ${CLIENT_URL}
     extra_hosts:
       - "host.docker.internal:host-gateway"

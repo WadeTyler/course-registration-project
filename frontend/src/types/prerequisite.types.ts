@@ -1,5 +1,7 @@
 
-// Prerequisite fields
+/*
+ * Prerequisite fields
+ */
 export type Prerequisite = {
   id: number;
   courseId: number;
@@ -10,7 +12,9 @@ export type Prerequisite = {
   createdAt: string;
 }
 
-// Required fields to update or create a prerequisite.
+/*
+ * Required fields to update or create a prerequisite.
+ */
 export type ManagePrerequisiteRequest = {
   requiredCourseId: number;
   minimumGrade: number;

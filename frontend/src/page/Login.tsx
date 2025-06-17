@@ -1,53 +1,35 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {type FormEvent, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom'
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {login} from "../features/auth/auth.api.ts";
+import Loader from "../components/Loader.tsx";
+import type {User} from "../types/user.types.ts";
 
 const Login: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [rememberMe, setRememberMe] = useState(false);
+
+    // States
+    const [username, setUsername] = useState<string>("")
+    const [password, setPassword] = useState<string>("");
+
+    // QueryClient & Navigation
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
 
-    const validateEmail = (email: string) =>
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    // Mutation
+    const {mutate: loginMutation, isPending:isLoggingIn, error:loginError} = useMutation({
+        mutationFn: login,
+        onSuccess: async (user: User) => {
+            queryClient.setQueryData(['authUser'], user);
+            navigate("/dashboard");
+        }
+    });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    // Form Event
+    async function handleSubmit(e: FormEvent) {
         e.preventDefault();
-        setError('');
-
-        if (!email || !password) {
-            setError('Please enter both email and password.');
-            return;
-        }
-
-        if (!validateEmail(email)) {
-            setError('Please enter a valid email address.');
-            return;
-        }
-
-        setLoading(true);
-
-        // Simulate login request
-        setTimeout(() => {
-            setLoading(false);
-
-            // Dummy login check (replace with real auth)
-            if (email === 'user@example.com' && password === 'Password123!') {
-                // Optional: save login info if rememberMe
-                if (rememberMe) {
-                    localStorage.setItem('rememberEmail', email);
-                } else {
-                    localStorage.removeItem('rememberEmail');
-                }
-
-                navigate('/dashboard');
-            } else {
-                setError('Invalid email or password.');
-            }
-        }, 1000);
-    };
+        if (isLoggingIn || !username || !password) return;
+        loginMutation({username, password});
+    }
 
     return (
         <div
@@ -63,56 +45,37 @@ const Login: React.FC = () => {
                     className="w-64 mb-6"
                 />
 
-                {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
-
                 <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
                     <input
+                        id="username"
+                        name="username"
                         type="email"
                         aria-label="Email"
                         placeholder="Email"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
                         className="border border-gray-300 rounded px-4 py-2"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    <div className="relative">
-                        <input
-                            type={showPassword ? 'text' : 'password'}
-                            aria-label="Password"
-                            placeholder="Password"
-                            className="border border-gray-300 rounded px-4 py-2 w-full"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <button
-                            type="button"
-                            className="absolute right-3 top-2 text-sm text-blue-600"
-                            onClick={() => setShowPassword(!showPassword)}
-                            aria-label="Toggle password visibility"
-                        >
-                            {showPassword ? 'Hide' : 'Show'}
-                        </button>
-                    </div>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        className="border border-gray-300 rounded px-4 py-2"
+                    />
 
-                    <div className="flex justify-between items-center text-sm">
-                        <label className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                checked={rememberMe}
-                                onChange={() => setRememberMe(!rememberMe)}
-                            />
-                            Remember me
-                        </label>
-                        <Link to="/forgot-password" className="text-blue-600 hover:underline">
-                            Forgot password?
-                        </Link>
-                    </div>
-
+                    {loginError && <p className="text-red-400">{(loginError as Error).message}</p>}
+                    
                     <button
                         type="submit"
-                        className="bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-                        disabled={loading}
+                        disabled={isLoggingIn}
+                        className="bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 text-center"
                     >
-                        {loading ? 'Logging in...' : 'Login'}
+                        {isLoggingIn ? <Loader /> : "Login"}
                     </button>
                 </form>
 

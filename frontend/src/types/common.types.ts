@@ -1,16 +1,27 @@
 
-// API Wrapper for all endpoint responses
-export interface APIResponse<T> {
-  isSuccess: boolean;
+/*
+ * Response wrapper for API Errors.
+ */
+export interface ErrorResponse {
+  timestamp: string;
+  status: number;
+  error: string;
   message: string;
-  data: T
 }
 
-// Page Response for pagination endpoints
+/*
+ * Page Response for pagination endpoints
+ */
 export interface PageResponse<T> {
   content: T[];
   pageNumber: number;
   pageSize: number;
   totalElements: number;
   totalPages: number;
+}
+
+export interface Pageable {
+  page?: number;
+  size?: number;
+  sort?: "asc" | "desc";
 }

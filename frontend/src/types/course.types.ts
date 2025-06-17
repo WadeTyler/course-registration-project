@@ -1,7 +1,9 @@
 import type {Prerequisite} from "./prerequisite.types.ts";
 import type {CourseSection} from "./course-section.types.ts";
 
-// Course fields
+/*
+ * Course fields
+ */
 export interface Course {
   id: number;
   department: string;
@@ -14,7 +16,9 @@ export interface Course {
   createdAt: string;
 }
 
-// Course Attribute fields used
+/*
+ * Course Attribute fields used
+ */
 export interface CourseAttributes {
   id: number;
   department: string;
@@ -24,7 +28,9 @@ export interface CourseAttributes {
   credits: number;
 }
 
-// Fields required to create or update a course
+/*
+ * Fields required to create or update a course
+ */
 export type ManageCourseRequest = {
   department: string;
   code: number;

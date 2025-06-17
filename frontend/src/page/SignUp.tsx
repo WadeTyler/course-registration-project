@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {signup} from "../features/auth/auth.api.ts";
+import type {User} from "../types/user.types.ts";
+import Loader from "../components/Loader.tsx";
 
 const SignUp: React.FC = () => {
     const [step, setStep] = useState(1);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-
-    const navigate = useNavigate();
 
     const [passwordChecks, setPasswordChecks] = useState({
         length: false,
@@ -38,23 +36,10 @@ const SignUp: React.FC = () => {
     const handleNext = (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
-        setSuccess('');
-
-        if (!firstName || !lastName || !username || !email) {
-            setError('Please fill in all fields.');
-            return;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            setError('Please enter a valid email address.');
-            return;
-        }
-
         setStep(2);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setSuccess('');
@@ -78,23 +63,10 @@ const SignUp: React.FC = () => {
             return;
         }
 
-        setIsLoading(true);
+        setError("");
+        console.log("Form submitted:", { firstName, lastName, username, email, password });
 
-        try {
-            // TODO: Replace with actual API call
-            await new Promise(resolve => setTimeout(resolve, 1000)); // mock delay
-
-            console.log("Form submitted:", {
-                firstName, lastName, username, email, password,
-            });
-
-            setSuccess("Account created successfully!");
-            setTimeout(() => navigate("/dashboard"), 1500);
-        } catch (err) {
-            setError("Something went wrong. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
+        // TODO: Send data to backend API
     };
 
     return (
@@ -114,65 +86,49 @@ const SignUp: React.FC = () => {
                 {error && <p className="text-red-500 mb-4" role="alert">{error}</p>}
                 {success && <p className="text-green-600 mb-4" role="alert">{success}</p>}
 
-                {step === 1 && (
-                    <form className="w-full flex flex-col gap-4" onSubmit={handleNext}>
-                        <label>
-                            <input
-                                type="text"
-                                placeholder="First Name"
-                                className="border border-gray-300 rounded px-4 py-2 w-full"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                required
-                                aria-label="First Name"
-                            />
-                        </label>
-                        <label>
-                            <input
-                                type="text"
-                                placeholder="Last Name"
-                                className="border border-gray-300 rounded px-4 py-2 w-full"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                required
-                                aria-label="Last Name"
-                            />
-                        </label>
-                        <label>
-                            <input
-                                type="text"
-                                placeholder="Username"
-                                className="border border-gray-300 rounded px-4 py-2 w-full"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                                aria-label="Username"
-                            />
-                        </label>
-                        <label>
-                            <input
-                                type="email"
-                                placeholder="Email"
-                                className="border border-gray-300 rounded px-4 py-2 w-full"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                aria-label="Email"
-                            />
-                        </label>
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-                        >
-                            Next
-                        </button>
-                        <div className="flex justify-center">
-                            <Link to="/" className="mt-4 text-blue-600 font-semibold hover:underline">
-                                Already have an account? Login
-                            </Link>
-                        </div>
-                    </form>
-                )}
+            {step === 1 && (
+            <form className="w-full flex flex-col gap-4" onSubmit={handleNext}>
+                <input
+                type="text"
+                placeholder="First Name"
+                className="border border-gray-300 rounded px-4 py-2"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                />
+                <input
+                type="text"
+                placeholder="Last Name"
+                className="border border-gray-300 rounded px-4 py-2"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                />
+                <input
+                type="text"
+                placeholder="Username"
+                className="border border-gray-300 rounded px-4 py-2"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                />
+                <input
+                type="email"
+                placeholder="Email"
+                className="border border-gray-300 rounded px-4 py-2"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                />
+                <button
+                type="submit"
+                className="bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700"
+                >
+                Next
+                </button>
+                <div className="flex justify-center">
+                    <Link to="/" className="mt-4 text-blue-600 font-semibold hover:underline">
+                    Already have an account? Login
+                    </Link>
+                </div>
+            </form>
+            )}
 
                 {step === 2 && (
                     <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -236,16 +192,15 @@ const SignUp: React.FC = () => {
                             <label htmlFor="showPassword" className="text-sm text-gray-700">Show Password</label>
                         </div>
 
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Signing Up...' : 'Sign Up'}
-                        </button>
-                    </form>
-                )}
-            </div>
+                <button
+                    type="submit"
+                    className="bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700"
+                    >
+                    Sign Up
+                </button>
+            </form>
+            )}
+        </div>
         </div>
     );
 };
