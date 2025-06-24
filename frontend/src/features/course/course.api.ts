@@ -1,4 +1,3 @@
-import type {Pageable, PageResponse} from "../../types/common.types.ts";
 import type {Course, ManageCourseRequest} from "../../types/course.types.ts";
 import type {AxiosResponse} from "axios";
 import {axiosInstance} from "../../config/axios.config.ts";
@@ -6,15 +5,12 @@ import {handleApiError} from "../../lib/util/api.util.ts";
 
 /**
  * Query function to retrieve a PageResponse of courses.
- * @param pageable  the pageable fields
  * @return a page response of courses.
  * @throws Error
  */
-export async function getAllCourses(pageable: Pageable): Promise<PageResponse<Course>> {
+export async function getAllCourses(): Promise<Course[]> {
   try {
-    const response: AxiosResponse<PageResponse<Course>> = await axiosInstance.get("/courses", {
-      params: pageable
-    });
+    const response: AxiosResponse<Course[]> = await axiosInstance.get("/courses");
     return response.data;
   } catch (e) {
     handleApiError(e);
@@ -27,7 +23,7 @@ export async function getAllCourses(pageable: Pageable): Promise<PageResponse<Co
  * @return the target course
  * @throws Error
  */
-export async function getCourseById({courseId}: {courseId: number}): Promise<Course> {
+export async function getCourseById({courseId}: { courseId: number }): Promise<Course> {
   try {
     const response: AxiosResponse<Course> = await axiosInstance.get(`/courses/${courseId}`);
     return response.data;
@@ -77,7 +73,7 @@ export async function updateCourse({courseId, manageCourseRequest}: {
  * @return void
  * @throws Error
  */
-export async function deleteCourse({courseId}: {courseId: number}): Promise<void> {
+export async function deleteCourse({courseId}: { courseId: number }): Promise<void> {
   try {
     await axiosInstance.delete(`/courses/${courseId}`);
   } catch (e) {

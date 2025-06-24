@@ -3,12 +3,12 @@ package net.tylerwade.registrationsystem.auth;
 import net.tylerwade.registrationsystem.auth.dto.SignupRequest;
 import net.tylerwade.registrationsystem.auth.dto.UpdateUserRequest;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service interface for managing user-related operations.
@@ -26,12 +26,11 @@ public interface UserService extends UserDetailsService {
     User findById(Long userId) throws HttpRequestException;
 
     /**
-     * Retrieves a paginated list of all users in the system.
+     * Retrieves a list of all users in the system.
      *
-     * @param pageable the pagination information, including page number, size, and sort order
-     * @return a page of User entities
+     * @return a list of User entities
      */
-    Page<User> findAll(Pageable pageable, String search);
+    List<User> findAll();
 
     /**
      * Loads a user by their username.

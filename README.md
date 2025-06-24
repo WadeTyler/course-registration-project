@@ -2,13 +2,13 @@
 
 ## Running Locally with Docker
 
-You can use Docker to quickly start the database and backend services.
+You can use Docker to quickly start the services.
 
 ### 1. Environmental Variables
 - Create a `.env` file with the following layout. Then fill in and modify necessary details.
 ```
 # Environment
-ENVIRONMENT=development
+ENVIRONMENT=PRODUCTION
 
 # Database
 DB_USER=register_rus_user
@@ -26,6 +26,9 @@ JWT_ISSUER=http://localhost:8484
 
 # Cors
 CLIENT_URL=http://localhost:5173
+
+# Frontend
+FRONTEND_PORT=5173
 ```
 - For JWT Secret generate a random HS256 secret using [this generator](https://ij0c1ykkfk.execute-api.us-east-1.amazonaws.com/default/hs256_generator).
 - For production, change `ENVIRONMENT` to `production`
@@ -36,8 +39,9 @@ CLIENT_URL=http://localhost:5173
   ```sh
   docker compose up -d --build
   ```
-- This will start the database and backend containers in the background.
+- This will start the frontend, database and backend containers in the background.
 - The backend will connect to the database container automatically (see `compose.yaml` for details).
+- To verify the frontend is up and running visit http://localhost:5173 or your configured endpoint.
 - To verify the backend is up and running visit the [/api-docs-ui](http://localhost:8484/api-docs-ui)  endpoint in your browser.
 
 ### 3. Stopping Services

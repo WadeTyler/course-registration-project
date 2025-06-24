@@ -13,16 +13,14 @@ import net.tylerwade.registrationsystem.auth.dto.SignupRequest;
 import net.tylerwade.registrationsystem.auth.dto.UpdateUserRequest;
 import net.tylerwade.registrationsystem.auth.dto.UserDTO;
 import net.tylerwade.registrationsystem.auth.token.TokenService;
-import net.tylerwade.registrationsystem.common.PageResponse;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Auth Controller", description = "Operations related to users")
 @RestController
@@ -108,21 +106,15 @@ public class AuthController {
     /*
      * Find all users
      */
-    @Operation(summary = "Get all users (admin only)", description = "Returns a paginated list of all users. Admin access required.")
+    @Operation(summary = "Get all users (admin only)", description = "Returns a list of all users. Admin access required.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Users retrieved successfully")
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<UserDTO> getAllUsers(@ParameterObject Pageable pageable,
-                                         @Parameter(description = "Search query for users") @RequestParam(required = false) String search) {
-        Page<UserDTO> page = userService.findAll(pageable, search).map(User::toDTO);
-        return new PageResponse<>(page.getContent(),
-                page.getNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages());
+    public List<UserDTO> getAllUsers() {
+        return userService.findAll().stream().map(User::toDTO).toList();
     }
 
     /*

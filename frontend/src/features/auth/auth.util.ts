@@ -26,3 +26,7 @@ export function isInstructor(user: User): boolean {
 export function isStudent(user: User): boolean {
     return user.userAuthorities.some(auth => auth.name === "STUDENT");
 }
+
+export function getUserRole(user: User): "ADMIN" | "INSTRUCTOR" | "STUDENT" {
+    return isAdmin(user) ? "ADMIN" : isInstructor(user) ? "INSTRUCTOR" : "STUDENT";
+}

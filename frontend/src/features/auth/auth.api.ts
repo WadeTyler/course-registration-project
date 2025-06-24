@@ -1,7 +1,7 @@
 import {axiosInstance} from "../../config/axios.config.ts";
 import type {SignupRequest, User} from "../../types/user.types.ts";
 import type {AxiosError, AxiosResponse} from "axios";
-import type {ErrorResponse, PageResponse} from "../../types/common.types.ts";
+import type {ErrorResponse} from "../../types/common.types.ts";
 import {handleApiError} from "../../lib/util/api.util.ts";
 
 /**
@@ -72,29 +72,12 @@ export async function signup(signupRequest: SignupRequest): Promise<User> {
 }
 
 /**
- * Retrieve a page of all users. User must be an Admin.
- * @param page the number of the page
- * @param size the size of the page
- * @param sort the direction to sort
- * @param search search fields (email/username, firstName, lastName)
- * @return a PageResponse containing users.
+ * Retrieve a list of all users. User must be an Admin.
  * @throws Error
  */
-export async function getAllUsers({page, size, sort, search}: {
-  page: number,
-  size: number,
-  sort: "asc" | "desc",
-  search: string | null
-}): Promise<PageResponse<User>> {
+export async function getAllUsers(): Promise<User[]> {
   try {
-    const response: AxiosResponse<PageResponse<User>> = await axiosInstance.get(`/auth/users`, {
-      params: {
-        page,
-        size,
-        sort,
-        search
-      }
-    });
+    const response: AxiosResponse<User[]> = await axiosInstance.get(`/auth/users`);
     return response.data;
   } catch (e) {
     handleApiError(e);

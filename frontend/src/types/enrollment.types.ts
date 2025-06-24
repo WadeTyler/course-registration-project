@@ -37,3 +37,5 @@ export type ManageEnrollmentRequest = {
   grade: number;
   status: string;
 }
+
+export type ValidEnrollmentStatus = "NOT_STARTED" | "STARTED" | "COMPLETED" | "DROPPED" | "FAILED";
