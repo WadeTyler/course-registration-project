@@ -6,8 +6,6 @@ import net.tylerwade.registrationsystem.auth.authority.AuthorityService;
 import net.tylerwade.registrationsystem.auth.dto.SignupRequest;
 import net.tylerwade.registrationsystem.auth.dto.UpdateUserRequest;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -35,12 +34,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> findAll(Pageable pageable, String search) {
-        if (search != null) {
-            return userRepository.findAllByUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(search, search, search, pageable);
-        } else {
-            return userRepository.findAll(pageable);
-        }
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     @Override

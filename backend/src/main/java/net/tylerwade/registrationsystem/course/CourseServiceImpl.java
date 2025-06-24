@@ -2,12 +2,11 @@ package net.tylerwade.registrationsystem.course;
 
 import net.tylerwade.registrationsystem.course.dto.ManageCourseRequest;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -19,8 +18,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Page<Course> findAll(Pageable pageable) {
-        return courseRepository.findAll(pageable);
+    public List<Course> findAll() {
+        return courseRepository.findAll();
     }
 
     @Override

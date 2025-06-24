@@ -41,15 +41,17 @@ export async function createPrerequisite({courseId, managePrerequisiteRequest}: 
  * Mutation function to update a prerequisite for a course. Must be admin.
  * @param courseId the target course the prerequisite belongs to.
  * @param managePrerequisiteRequest the data payload to manage the prerequisite.
+ * @param prerequisiteId the prerequisite's ID.
  * @return the newly updated prerequisite
  * @throws Error
  */
-export async function updatePrerequisite({courseId, managePrerequisiteRequest}: {
+export async function updatePrerequisite({courseId, managePrerequisiteRequest, prerequisiteId}: {
   courseId: number,
-  managePrerequisiteRequest: ManagePrerequisiteRequest
+  managePrerequisiteRequest: ManagePrerequisiteRequest,
+  prerequisiteId: number
 }): Promise<Prerequisite> {
   try {
-    const response: AxiosResponse<Prerequisite> = await axiosInstance.put(`/courses/${courseId}/prerequisites`, managePrerequisiteRequest);
+    const response: AxiosResponse<Prerequisite> = await axiosInstance.put(`/courses/${courseId}/prerequisites/${prerequisiteId}`, managePrerequisiteRequest);
     return response.data;
   } catch (e) {
     handleApiError(e);

@@ -6,16 +6,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import net.tylerwade.registrationsystem.common.PageResponse;
 import net.tylerwade.registrationsystem.course.dto.CourseDTO;
 import net.tylerwade.registrationsystem.course.dto.ManageCourseRequest;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Course Controller", description = "Operations related to courses")
 @RestController
@@ -31,15 +29,14 @@ public class CourseController {
     /**
      * Find all courses
      */
-    @Operation(summary = "Get all courses", description = "Returns a paginated list of all courses.")
+    @Operation(summary = "Get all courses", description = "Returns a list of all courses.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Courses retrieved successfully")
     })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<CourseDTO> findAll(@ParameterObject Pageable pageable) {
-        Page<CourseDTO> page = courseService.findAll(pageable).map(Course::toDTO);
-        return PageResponse.convertPage(page);
+    public List<CourseDTO> findAll() {
+        return courseService.findAll().stream().map(Course::toDTO).toList();
     }
 
     /**

@@ -2,9 +2,9 @@ package net.tylerwade.registrationsystem.course;
 
 import net.tylerwade.registrationsystem.course.dto.ManageCourseRequest;
 import net.tylerwade.registrationsystem.exception.HttpRequestException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Service interface for managing courses.
@@ -15,10 +15,9 @@ public interface CourseService {
     /**
      * Retrieves a paginated list of all courses.
      *
-     * @param pageable the pagination information
      * @return a page of courses
      */
-    Page<Course> findAll(Pageable pageable);
+    List<Course> findAll();
 
     /**
      * Finds a course by its ID.

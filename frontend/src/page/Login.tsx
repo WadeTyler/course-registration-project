@@ -4,6 +4,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {login} from "../features/auth/auth.api.ts";
 import Loader from "../components/Loader.tsx";
 import type {User} from "../types/user.types.ts";
+import {isAdmin, isInstructor} from "../features/auth/auth.util.ts";
 
 const Login: React.FC = () => {
 
@@ -16,11 +17,17 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
 
     // Mutation
-    const {mutate: loginMutation, isPending:isLoggingIn, error:loginError} = useMutation({
+    const {mutate: loginMutation, isPending: isLoggingIn, error: loginError} = useMutation({
         mutationFn: login,
         onSuccess: async (user: User) => {
             queryClient.setQueryData(['authUser'], user);
-            navigate("/dashboard");
+            if (isAdmin(user)) {
+                navigate("/admin");
+            } else if (isInstructor(user)) {
+                navigate("/instructor");
+            } else {
+                navigate("/dashboard");
+            }
         }
     });
 
@@ -66,13 +73,13 @@ const Login: React.FC = () => {
                     />
 
                     {loginError && <p className="text-red-400">{(loginError as Error).message}</p>}
-                    
+
                     <button
                         type="submit"
                         disabled={isLoggingIn}
                         className="bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 text-center"
                     >
-                        {isLoggingIn ? <Loader /> : "Login"}
+                        {isLoggingIn ? <Loader/> : "Login"}
                     </button>
                 </form>
 
