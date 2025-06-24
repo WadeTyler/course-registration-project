@@ -2,8 +2,8 @@
 import React, {useEffect} from 'react';
 import {Navigate, Route, Routes} from 'react-router-dom';
 
-import Login from './page/Login';
-import SignUp from './page/SignUp'
+import Login from './page/auth/Login.tsx';
+import SignUp from './page/auth/SignUp.tsx'
 import {useQuery} from "@tanstack/react-query";
 import {getAuthUser} from "./features/auth/auth.api.ts";
 import {isAdmin, isInstructor, isStudent} from "./features/auth/auth.util.ts";

@@ -1,10 +1,10 @@
 import React, {type FormEvent, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom'
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {login} from "../features/auth/auth.api.ts";
-import Loader from "../components/Loader.tsx";
-import type {User} from "../types/user.types.ts";
-import {isAdmin, isInstructor} from "../features/auth/auth.util.ts";
+import {login} from "@/features/auth/auth.api.ts";
+import Loader from "../../components/Loader.tsx";
+import type {User} from "@/types/user.types.ts";
+import {isAdmin, isInstructor} from "@/features/auth/auth.util.ts";
 
 const Login: React.FC = () => {
 

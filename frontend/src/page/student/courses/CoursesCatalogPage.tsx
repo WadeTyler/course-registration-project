@@ -7,6 +7,13 @@ import {useState} from "react";
 import {Label} from "@/components/ui/label.tsx";
 import {Accordion} from "@/components/ui/accordion.tsx";
 import CourseAccordionItem from "./_components/CourseAccordionItem.tsx";
+import {
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb.tsx";
 
 
 export default function CoursesCatalogPage() {
@@ -27,6 +34,14 @@ export default function CoursesCatalogPage() {
   return (
     <div className="p-page">
       <div className="container mx-auto flex flex-col gap-8">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbLink href="/student">Student Dashboard</BreadcrumbLink>
+            <BreadcrumbSeparator />
+            <BreadcrumbPage>Course Catalog</BreadcrumbPage>
+          </BreadcrumbList>
+        </Breadcrumb>
+
         <div>
           <h1 className="title">Course Catalog</h1>
           <p>Browse courses and register for upcoming sections.</p>
@@ -43,7 +58,7 @@ export default function CoursesCatalogPage() {
                 <Label>Department</Label>
                 <Select onValueChange={e => setDepartment(e)} value={department}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a department"></SelectValue>
+                    <SelectValue placeholder="Select a department to get started"></SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {uniqueDepartments.map(department => (

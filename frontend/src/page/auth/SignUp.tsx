@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {signup} from "../features/auth/auth.api.ts";
-import type {User} from "../types/user.types.ts";
-import Loader from "../components/Loader.tsx";
+import {signup} from "@/features/auth/auth.api.ts";
+import type {User} from "@/types/user.types.ts";
+import Loader from "../../components/Loader.tsx";
 
 const SignUp: React.FC = () => {
     const [step, setStep] = useState(1);

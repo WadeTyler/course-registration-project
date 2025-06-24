@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from "./ui/dropdown-menu.tsx";
-import {isAdmin, isInstructor} from "../features/auth/auth.util.ts";
+import {isAdmin, isInstructor, isStudent} from "../features/auth/auth.util.ts";
 
 export default function Navbar() {
 
@@ -27,7 +27,7 @@ export default function Navbar() {
   });
 
   return (
-    <header className="w-full h-16 fixed top-0 bg-blue-900 flex items-center justify-center z-50 p-4">
+    <header className="w-full h-16 fixed top-0 bg-accent/90 backdrop-blur-sm shadow-md flex items-center justify-center z-50 p-4">
       <nav className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to={"/"}>
@@ -53,6 +53,11 @@ export default function Navbar() {
               {isInstructor(authUser) && (
                 <>
                   <Link to={"/instructor/sections"}>Sections</Link>
+                </>
+              )}
+              {isStudent(authUser) && (
+                <>
+                  <Link to="/student/courses">Course Catalog</Link>
                 </>
               )}
             </div>

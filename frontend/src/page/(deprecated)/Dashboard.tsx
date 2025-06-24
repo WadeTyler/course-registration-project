@@ -19,10 +19,10 @@ import {
 } from 'lucide-react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import '../shake.css';
+import '../../shake.css';
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {logout} from "../features/auth/auth.api.ts";
-import Loader from "../components/Loader.tsx";
+import {logout} from "@/features/auth/auth.api.ts";
+import Loader from "../../components/Loader.tsx";
 
 // List of all possible widgets
 const widgetOptions = [
