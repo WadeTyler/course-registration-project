@@ -7,6 +7,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  type Row,
   type SortingState,
   useReactTable,
   type VisibilityState,
@@ -28,11 +29,28 @@ export function DataTable<TData, TValue>({
                                            data,
                                          }: DataTableProps<TData, TValue>) {
 
-  // Custom global filter function: checks all string fields for the search value
-  function globalStringFilter(row: any,_columnId: string, filterValue: string) {
-    // Check all string fields in the row
-    return Object.values(row.original).some((value) =>
-      typeof value === "string" && value.toLowerCase().includes(filterValue.toLowerCase())
+  // Custom global filter function: checks all fields for the search value
+  function globalStringFilter<TData>(
+    row: Row<TData>,
+    _columnId: string,
+    filterValue: string
+  ) {
+    // First try to get formatted cell values if available
+    const formattedValues = row.getAllCells().map(cell => {
+      // Try to get the rendered value if possible
+      const renderedValue = cell.column.columnDef.cell &&
+      typeof cell.column.columnDef.cell === 'function' ?
+        String(cell.column.columnDef.cell(cell.getContext())) : null;
+
+      // Fallback to original value
+      const rawValue = cell.getValue();
+
+      return renderedValue ?? (typeof rawValue === 'string' ? rawValue : String(rawValue ?? ''));
+    });
+
+    // Check if any formatted value matches the search
+    return formattedValues.some(value =>
+      value.toLowerCase().includes(filterValue.toLowerCase())
     );
   }
 

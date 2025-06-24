@@ -20,6 +20,9 @@ import InstructorDashboard from "./page/InstructorDashboard.tsx";
 import ManageCoursesPage from "./page/admin/courses/ManageCoursesPage.tsx";
 import ManageCoursePage from "./page/admin/courses/[courseId]/ManageCoursePage.tsx";
 import ManageTermsPage from "./page/admin/terms/ManageTermsPage.tsx";
+import ManageInstructorsPage from "./page/admin/instructors/ManageInstructorsPage.tsx";
+import ManageStudentsPage from "./page/admin/students/ManageStudentsPage.tsx";
+import ManageStudentPage from "./page/admin/students/[studentId]/ManageStudentPage.tsx";
 
 
 const App: React.FC = () => {
@@ -47,7 +50,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <Navbar/>
+      {authUser && <Navbar />}
       <div className="h-16"/>
 
       <Routes>
@@ -75,6 +78,9 @@ const App: React.FC = () => {
         <Route path="/admin/courses" element={(authUser && isAdmin(authUser)) ? <ManageCoursesPage/> : <Navigate to="/"/>}/>
         <Route path="/admin/courses/:courseId" element={(authUser && isAdmin(authUser)) ? <ManageCoursePage/> : <Navigate to="/"/>}/>
         <Route path="/admin/terms" element={(authUser && isAdmin(authUser)) ? <ManageTermsPage/> : <Navigate to="/"/>}/>
+        <Route path="/admin/instructors" element={(authUser && isAdmin(authUser)) ? <ManageInstructorsPage/> : <Navigate to="/"/>}/>
+        <Route path="/admin/students" element={(authUser && isAdmin(authUser)) ? <ManageStudentsPage/> : <Navigate to="/"/>}/>
+        <Route path="/admin/students/:studentId" element={(authUser && isAdmin(authUser)) ? <ManageStudentPage/> : <Navigate to="/"/>}/>
 
 
 
