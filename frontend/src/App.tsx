@@ -16,13 +16,15 @@ import {isAdmin, isInstructor, isStudent} from "./features/auth/auth.util.ts";
 import AdminDashboard from "./page/admin/AdminDashboard.tsx";
 import {Loader} from "lucide-react";
 import Navbar from "./components/Navbar.tsx";
-import InstructorDashboard from "./page/InstructorDashboard.tsx";
 import ManageCoursesPage from "./page/admin/courses/ManageCoursesPage.tsx";
 import ManageCoursePage from "./page/admin/courses/[courseId]/ManageCoursePage.tsx";
 import ManageTermsPage from "./page/admin/terms/ManageTermsPage.tsx";
 import ManageInstructorsPage from "./page/admin/instructors/ManageInstructorsPage.tsx";
 import ManageStudentsPage from "./page/admin/students/ManageStudentsPage.tsx";
 import ManageStudentPage from "./page/admin/students/[studentId]/ManageStudentPage.tsx";
+import InstructorDashboard from "./page/instructor/InstructorDashboard.tsx";
+import ManageInstructorSections from "./page/instructor/sections/ManageInstructorSections.tsx";
+import ManageInstructorSection from "./page/instructor/sections/[sectionId]/ManageInstructorSection.tsx";
 
 
 const App: React.FC = () => {
@@ -71,7 +73,11 @@ const App: React.FC = () => {
 
         {/* Instructor Routes */}
         <Route path={"/instructor"}
-               element={(authUser && isInstructor(authUser)) ? <InstructorDashboard/> : <Navigate to={"/"}/>}/>
+               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <InstructorDashboard/> : <Navigate to={"/"}/>}/>
+        <Route path={"/instructor/sections"}
+               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <ManageInstructorSections/> : <Navigate to={"/"}/>}/>
+        <Route path={"/instructor/sections/:sectionId"}
+               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <ManageInstructorSection/> : <Navigate to={"/"}/>}/>
 
         {/* Admin Routes */}
         <Route path="/admin" element={(authUser && isAdmin(authUser)) ? <AdminDashboard/> : <Navigate to="/"/>}/>

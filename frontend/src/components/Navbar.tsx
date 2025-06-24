@@ -9,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from "./ui/dropdown-menu.tsx";
-import {isAdmin} from "../features/auth/auth.util.ts";
+import {isAdmin, isInstructor} from "../features/auth/auth.util.ts";
 
 export default function Navbar() {
 
@@ -19,15 +19,15 @@ export default function Navbar() {
     queryFn: getAuthUser
   });
 
-  const {mutate: handleLogout, isPending:isLoggingOut} =useMutation({
+  const {mutate: handleLogout, isPending: isLoggingOut} = useMutation({
     mutationFn: logout,
     onSuccess: async () => {
       queryClient.invalidateQueries({queryKey: ['authUser']});
     }
-  })
+  });
 
   return (
-    <header className="w-full h-16 fixed top-0 bg-blue-900 flex items-center justify-center z-50">
+    <header className="w-full h-16 fixed top-0 bg-blue-900 flex items-center justify-center z-50 p-4">
       <nav className="container mx-auto flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to={"/"}>
@@ -39,16 +39,25 @@ export default function Navbar() {
           </Link>
 
           {/* Page Options */}
-          {authUser && isAdmin(authUser) && (
-            <div className="flex items-center gap-4 text-accent-foreground mx-auto">
-              <Link to="/admin/courses">Courses</Link>
-              <Link to="/admin/terms">Terms</Link>
-              <Link to="/admin/instructors">Instructors</Link>
-              <Link to="/admin/students">Students</Link>
+          {authUser && (
+            <div className="hidden md:flex items-center gap-4 text-accent-foreground mx-auto text-sm">
+              {isAdmin(authUser) && (
+                <>
+                  <Link to="/admin/courses">Courses</Link>
+                  <Link to="/admin/terms">Terms</Link>
+                  <Link to="/admin/instructors">Instructors</Link>
+                  <Link to="/admin/students">Students</Link>
+                  <Link to={"/instructor"}>Instructor Dashboard</Link>
+                </>
+              )}
+              {isInstructor(authUser) && (
+                <>
+                  <Link to={"/instructor/sections"}>Sections</Link>
+                </>
+              )}
             </div>
           )}
         </div>
-
 
 
         {/* Account Options */}

@@ -21,7 +21,11 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
     }
   },
   {
-    accessorKey: "section",
+    id: "section",
+    accessorFn: row => {
+      const section = row.courseSection;
+      return section.course.department + "-" + section.course.code + "-" + section.id;
+    },
     header: ({column}) => {
       return (
         <Button
@@ -32,10 +36,6 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4"/>
         </Button>
       );
-    },
-    cell: ({row}) => {
-      const section = row.original.courseSection;
-      return (section.course.department + "-" + section.course.code + "-" + section.id) as string;
     },
   },
   {
