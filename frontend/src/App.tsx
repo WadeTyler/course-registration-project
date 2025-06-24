@@ -4,12 +4,6 @@ import {Navigate, Route, Routes} from 'react-router-dom';
 
 import Login from './page/Login';
 import SignUp from './page/SignUp'
-import Dashboard from './page/Dashboard';
-import Courses from './page/Courses';
-import CourseDetails from './page/CourseDetails';
-import MySchedule from './page/MySchedule';
-import ProfileSettings from './page/ProfileSettings';
-import Billing from './page/Billing';
 import {useQuery} from "@tanstack/react-query";
 import {getAuthUser} from "./features/auth/auth.api.ts";
 import {isAdmin, isInstructor, isStudent} from "./features/auth/auth.util.ts";
@@ -25,6 +19,9 @@ import ManageStudentPage from "./page/admin/students/[studentId]/ManageStudentPa
 import InstructorDashboard from "./page/instructor/InstructorDashboard.tsx";
 import ManageInstructorSections from "./page/instructor/sections/ManageInstructorSections.tsx";
 import ManageInstructorSection from "./page/instructor/sections/[sectionId]/ManageInstructorSection.tsx";
+import StudentDashboard from "./page/student/StudentDashboard.tsx";
+import CoursesCatalogPage from "./page/student/courses/CoursesCatalogPage.tsx";
+import {Toaster} from "./components/ui/sonner.tsx";
 
 
 const App: React.FC = () => {
@@ -59,17 +56,12 @@ const App: React.FC = () => {
         {/* Public Routes */}
         <Route path="/"
                element={!authUser ? <Login/> : isAdmin(authUser) ? <Navigate to={"/admin"}/> : isInstructor(authUser) ?
-                 <Navigate to={"/instructor"}/> : <Navigate to="/dashboard"/>}/>
+                 <Navigate to={"/instructor"}/> : <Navigate to="/student"/>}/>
         <Route path="/signup" element={!authUser ? <SignUp/> : <Navigate to="/"/>}/>
 
-
         {/* Student Routes */}
-        <Route path="/dashboard" element={(authUser && isStudent(authUser)) ? <Dashboard/> : <Navigate to="/"/>}/>
-        <Route path="/courses" element={<Courses/>}/>
-        <Route path="/courses/:id" element={<CourseDetails/>}/>
-        <Route path="/schedule" element={<MySchedule/>}/>
-        <Route path="/profile" element={<ProfileSettings/>}/>
-        <Route path="/billing" element={<Billing/>}/>
+        <Route path="/student" element={(authUser && isStudent(authUser)) ? <StudentDashboard/> : <Navigate to="/"/>}/>
+        <Route path="/student/courses" element={(authUser && isStudent(authUser)) ? <CoursesCatalogPage/> : <Navigate to="/"/>}/>
 
         {/* Instructor Routes */}
         <Route path={"/instructor"}
@@ -92,6 +84,7 @@ const App: React.FC = () => {
 
 
       </Routes>
+      <Toaster />
     </>
   );
 };

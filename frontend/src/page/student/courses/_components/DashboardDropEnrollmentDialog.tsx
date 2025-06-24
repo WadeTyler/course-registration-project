@@ -1,4 +1,3 @@
-import type {Enrollment} from "@/types/enrollment.types.ts";
 import {
   Dialog,
   DialogContent,
@@ -7,13 +6,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger
-} from "../ui/dialog.tsx";
+} from "@/components/ui/dialog.tsx";
 import {useState} from "react";
-import {Button} from "../ui/button.tsx";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
+import type {Enrollment} from "@/types/enrollment.types.ts";
 import {deleteEnrollment} from "@/features/enrollment/enrollment.api.ts";
+import {Button} from "@/components/ui/button.tsx";
+import {TrashIcon} from "lucide-react";
 
-export default function DropEnrollmentDialog({enrollment}: { enrollment: Enrollment }) {
+export default function DashboardDropEnrollmentDialog({enrollment}: { enrollment: Enrollment }) {
 
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -36,7 +37,7 @@ export default function DropEnrollmentDialog({enrollment}: { enrollment: Enrollm
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"destructive"}>Drop</Button>
+        <Button size={"icon"} variant={"destructive"}><TrashIcon /></Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
