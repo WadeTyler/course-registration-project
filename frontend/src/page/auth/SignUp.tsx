@@ -99,11 +99,11 @@ const SignUp: React.FC = () => {
     return (
         <div
             className="min-h-screen bg-cover bg-center flex items-center justify-center"
-            style={{ backgroundImage: 'url("/src/assets/login-bg.jpg")' }}
+            style={{ backgroundImage: 'url("/login-bg.jpg")' }}
         >
             <div className="bg-white p-8 rounded-lg shadow-lg w-96 flex flex-col items-center">
                 <img
-                    src="/src/assets/rrs-logo.png"
+                    src="/rrs-logo.png"
                     alt="RRS Logo"
                     className="w-64 mb-6"
                 />

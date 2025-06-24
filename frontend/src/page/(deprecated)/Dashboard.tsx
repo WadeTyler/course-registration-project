@@ -102,7 +102,7 @@ const Dashboard: React.FC = () => {
         {/* Sidebar */}
         <aside className="w-72 bg-gradient-to-b from-blue-900 to-blue-700 text-white p-6 flex flex-col">
             <img
-            src="/src/assets/rrs-logo-white.png"
+            src="/public/rrs-logo-white.png"
             alt="Logo"
             className="w-60 mx-auto mb-12"
             />

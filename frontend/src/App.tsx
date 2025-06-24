@@ -49,8 +49,12 @@ const App: React.FC = () => {
 
   return (
     <>
-      {authUser && <Navbar />}
-      <div className="h-16"/>
+      {authUser && (
+        <>
+          <Navbar/>
+          <div className="h-16"/>
+        </>
+      )}
 
       <Routes>
         {/* Public Routes */}
@@ -61,30 +65,37 @@ const App: React.FC = () => {
 
         {/* Student Routes */}
         <Route path="/student" element={(authUser && isStudent(authUser)) ? <StudentDashboard/> : <Navigate to="/"/>}/>
-        <Route path="/student/courses" element={(authUser && isStudent(authUser)) ? <CoursesCatalogPage/> : <Navigate to="/"/>}/>
+        <Route path="/student/courses"
+               element={(authUser && isStudent(authUser)) ? <CoursesCatalogPage/> : <Navigate to="/"/>}/>
 
         {/* Instructor Routes */}
         <Route path={"/instructor"}
-               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <InstructorDashboard/> : <Navigate to={"/"}/>}/>
+               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <InstructorDashboard/> :
+                 <Navigate to={"/"}/>}/>
         <Route path={"/instructor/sections"}
-               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <ManageInstructorSections/> : <Navigate to={"/"}/>}/>
+               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <ManageInstructorSections/> :
+                 <Navigate to={"/"}/>}/>
         <Route path={"/instructor/sections/:sectionId"}
-               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <ManageInstructorSection/> : <Navigate to={"/"}/>}/>
+               element={(authUser && (isInstructor(authUser) || isAdmin(authUser))) ? <ManageInstructorSection/> :
+                 <Navigate to={"/"}/>}/>
 
         {/* Admin Routes */}
         <Route path="/admin" element={(authUser && isAdmin(authUser)) ? <AdminDashboard/> : <Navigate to="/"/>}/>
-        <Route path="/admin/courses" element={(authUser && isAdmin(authUser)) ? <ManageCoursesPage/> : <Navigate to="/"/>}/>
-        <Route path="/admin/courses/:courseId" element={(authUser && isAdmin(authUser)) ? <ManageCoursePage/> : <Navigate to="/"/>}/>
+        <Route path="/admin/courses"
+               element={(authUser && isAdmin(authUser)) ? <ManageCoursesPage/> : <Navigate to="/"/>}/>
+        <Route path="/admin/courses/:courseId"
+               element={(authUser && isAdmin(authUser)) ? <ManageCoursePage/> : <Navigate to="/"/>}/>
         <Route path="/admin/terms" element={(authUser && isAdmin(authUser)) ? <ManageTermsPage/> : <Navigate to="/"/>}/>
-        <Route path="/admin/instructors" element={(authUser && isAdmin(authUser)) ? <ManageInstructorsPage/> : <Navigate to="/"/>}/>
-        <Route path="/admin/students" element={(authUser && isAdmin(authUser)) ? <ManageStudentsPage/> : <Navigate to="/"/>}/>
-        <Route path="/admin/students/:studentId" element={(authUser && isAdmin(authUser)) ? <ManageStudentPage/> : <Navigate to="/"/>}/>
-
-
+        <Route path="/admin/instructors"
+               element={(authUser && isAdmin(authUser)) ? <ManageInstructorsPage/> : <Navigate to="/"/>}/>
+        <Route path="/admin/students"
+               element={(authUser && isAdmin(authUser)) ? <ManageStudentsPage/> : <Navigate to="/"/>}/>
+        <Route path="/admin/students/:studentId"
+               element={(authUser && isAdmin(authUser)) ? <ManageStudentPage/> : <Navigate to="/"/>}/>
 
 
       </Routes>
-      <Toaster />
+      <Toaster/>
     </>
   );
 };

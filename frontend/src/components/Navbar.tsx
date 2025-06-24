@@ -32,7 +32,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <Link to={"/"}>
             <img
-              src="/src/assets/rrs-logo-white.png"
+              src="/rrs-logo-white.png"
               alt="Home"
               className="w-32"
             />
