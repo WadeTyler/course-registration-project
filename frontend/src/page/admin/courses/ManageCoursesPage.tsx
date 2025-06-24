@@ -1,7 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {getAllCourses} from "../../../features/course/course.api.ts";
 import Loader from "../../../components/Loader.tsx";
-import {ManageCoursesTable} from "./_components/manage-courses-table.tsx";
 import {columns} from "./_components/columns.tsx";
 import {
   Breadcrumb,
@@ -12,6 +11,7 @@ import {
   BreadcrumbSeparator
 } from "../../../components/ui/breadcrumb.tsx";
 import CreateCourseSheet from "./_components/CreateCourseSheet.tsx";
+import {DataTable} from "../../../components/data-table.tsx";
 
 export default function ManageCoursesPage() {
 
@@ -50,13 +50,9 @@ export default function ManageCoursesPage() {
           <>
 
             <div className="ml-auto flex items-center gap-4">
-              <CreateCourseSheet />
+              <CreateCourseSheet/>
             </div>
-            <div className='w-full bg-secondary rounded-md shadow-md p-4'>
-              <div className="w-full bg-background">
-                <ManageCoursesTable columns={columns} data={courses}/>
-              </div>
-            </div>
+            <DataTable columns={columns} data={courses}/>
           </>
         )}
       </div>

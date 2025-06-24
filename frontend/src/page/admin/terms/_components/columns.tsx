@@ -1,7 +1,6 @@
 "use client"
 
 import type {ColumnDef} from "@tanstack/react-table"
-import type {Course} from "../../../../types/course.types.ts";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,117 +9,107 @@ import {
   DropdownMenuTrigger
 } from "../../../../components/ui/dropdown-menu.tsx";
 import {ArrowUpDown, MoreHorizontal} from "lucide-react";
-import {Link} from "react-router-dom";
+import type {Term} from "../../../../types/term.types.ts";
+import EditTermSheet from "./EditTermSheet.tsx";
+import DeleteTermDialog from "./DeleteTermDialog.tsx";
 import {Button} from "../../../../components/ui/button.tsx";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
 
-export const columns: ColumnDef<Course>[] = [
+export const columns: ColumnDef<Term>[] = [
   {
     accessorKey: "actions",
     header: "Actions",
     cell: ({row}) => {
 
-      const course = row.original;
+      const term = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger>
             <MoreHorizontal/>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="flex-col-2">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <Link to={`/admin/courses/${course.id}`}>
-              <DropdownMenuItem>Manage</DropdownMenuItem>
-            </Link>
+            <DropdownMenuItem asChild><EditTermSheet term={term}/></DropdownMenuItem>
+            <DropdownMenuItem asChild><DeleteTermDialog term={term}/></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
     }
   },
   {
-    accessorKey: "department",
+    accessorKey: "id",
     header: ({column}) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Department
+          ID
           <ArrowUpDown className="ml-2 h-4 w-4"/>
         </Button>
       );
     },
-  },
-  {
-    accessorKey: "code",
-    header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Code
-          <ArrowUpDown className="ml-2 h-4 w-4"/>
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "title",
-    header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Title
-          <ArrowUpDown className="ml-2 h-4 w-4"/>
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "description",
-    header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Description
-          <ArrowUpDown className="ml-2 h-4 w-4"/>
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "credits",
-    header: ({column}) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Credits
-          <ArrowUpDown className="ml-2 h-4 w-4"/>
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "sectionsLength",
-    header: "Sections",
-    cell: ({row}) => {
-      return row.original.courseSections.length;
+    cell: ({ row }) => {
+      return row.original.id.toString();
     }
   },
   {
-    accessorKey: "prerequisitesLength",
-    header: "Prerequisites",
-    cell: ({row}) => {
-      return row.original.prerequisites.length;
-    }
-  }
+    accessorKey: "startDate",
+    header: ({column}) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Start Date
+          <ArrowUpDown className="ml-2 h-4 w-4"/>
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "endDate",
+    header: ({column}) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          End Date
+          <ArrowUpDown className="ml-2 h-4 w-4"/>
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "registrationStart",
+    header: ({column}) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Registration Start
+          <ArrowUpDown className="ml-2 h-4 w-4"/>
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "registrationEnd",
+    header: ({column}) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Registration End
+          <ArrowUpDown className="ml-2 h-4 w-4"/>
+        </Button>
+      );
+    },
+  },
 ]

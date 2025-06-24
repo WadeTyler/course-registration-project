@@ -1,7 +1,7 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../components/ui/card.tsx";
 import {Button} from "../../components/ui/button.tsx";
 import {Link} from "react-router-dom";
-import {ClipboardIcon, PencilIcon, UsersIcon} from "lucide-react";
+import {CalendarIcon, ClipboardIcon, PencilIcon, UsersIcon} from "lucide-react";
 
 export default function AdminDashboard() {
   return (
@@ -13,7 +13,7 @@ export default function AdminDashboard() {
           <p>View and manage your students, courses, and instructors.</p>
         </div>
 
-        <section className="grid lg:grid-cols-3 gap-8">
+        <section className="grid lg:grid-cols-2 gap-8">
           <Card>
             <CardHeader>
               <CardTitle>Courses</CardTitle>
@@ -24,6 +24,21 @@ export default function AdminDashboard() {
                 <Button variant="outline" className="w-full">
                   <PencilIcon />
                   Manage Courses
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Terms</CardTitle>
+              <CardDescription>View and manage your terms.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link to="/admin/terms">
+                <Button variant="outline" className="w-full">
+                  <CalendarIcon />
+                  Manage Terms
                 </Button>
               </Link>
             </CardContent>

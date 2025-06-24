@@ -19,6 +19,7 @@ import Navbar from "./components/Navbar.tsx";
 import InstructorDashboard from "./page/InstructorDashboard.tsx";
 import ManageCoursesPage from "./page/admin/courses/ManageCoursesPage.tsx";
 import ManageCoursePage from "./page/admin/courses/[courseId]/ManageCoursePage.tsx";
+import ManageTermsPage from "./page/admin/terms/ManageTermsPage.tsx";
 
 
 const App: React.FC = () => {
@@ -73,6 +74,8 @@ const App: React.FC = () => {
         <Route path="/admin" element={(authUser && isAdmin(authUser)) ? <AdminDashboard/> : <Navigate to="/"/>}/>
         <Route path="/admin/courses" element={(authUser && isAdmin(authUser)) ? <ManageCoursesPage/> : <Navigate to="/"/>}/>
         <Route path="/admin/courses/:courseId" element={(authUser && isAdmin(authUser)) ? <ManageCoursePage/> : <Navigate to="/"/>}/>
+        <Route path="/admin/terms" element={(authUser && isAdmin(authUser)) ? <ManageTermsPage/> : <Navigate to="/"/>}/>
+
 
 
 
