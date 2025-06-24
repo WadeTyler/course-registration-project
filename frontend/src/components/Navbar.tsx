@@ -68,7 +68,7 @@ export default function Navbar() {
         {/* Account Options */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar>
+            <Avatar className="shadow-md">
               <AvatarFallback>
                 {authUser?.firstName[0].toUpperCase()}{authUser?.lastName[0].toUpperCase()}
               </AvatarFallback>
