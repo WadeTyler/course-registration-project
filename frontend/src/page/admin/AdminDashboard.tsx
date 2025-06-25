@@ -2,8 +2,13 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../c
 import {Button} from "../../components/ui/button.tsx";
 import {Link} from "react-router-dom";
 import {CalendarIcon, ClipboardIcon, PencilIcon, UsersIcon} from "lucide-react";
+import {useEffect} from "react";
 
 export default function AdminDashboard() {
+  useEffect(() => {
+    document.title = "Admin Dashboard | Register R Us";
+  }, []);
+
   return (
     <div className="p-page">
       <div className="container mx-auto flex flex-col gap-8">

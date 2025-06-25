@@ -1,9 +1,9 @@
 import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
-import {getAssignedCourseSectionById} from "../../../../features/coursesection/coursesection.api.ts";
+import {getAssignedCourseSectionById} from "@/features/coursesection/coursesection.api.ts";
 import Loader from "../../../../components/Loader.tsx";
-import {Card, CardContent, CardHeader, CardTitle} from "../../../../components/ui/card.tsx";
-import {DataTable} from "../../../../components/data-table.tsx";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {DataTable} from "@/components/data-table.tsx";
 import {instructorEnrollmentColumns} from "./_components/instructor-enrollment-columns.tsx";
 import {
   Breadcrumb,
@@ -11,9 +11,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from "../../../../components/ui/breadcrumb.tsx";
+} from "@/components/ui/breadcrumb.tsx";
+import {useEffect} from "react";
 
 export default function ManageInstructorSection() {
+  useEffect(() => {
+    document.title = "Assigned Section | Register R Us";
+  }, []);
 
   const {sectionId} = useParams();
 

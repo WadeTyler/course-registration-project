@@ -1,9 +1,9 @@
 import {useQuery} from "@tanstack/react-query";
-import {getAllUsers} from "../../../features/auth/auth.api.ts";
+import {getAllUsers} from "@/features/auth/auth.api.ts";
 import Loader from "../../../components/Loader.tsx";
-import {DataTable} from "../../../components/data-table.tsx";
+import {DataTable} from "@/components/data-table.tsx";
 import {columns} from "./_components/columns.tsx";
-import {isAdmin, isInstructor} from "../../../features/auth/auth.util.ts";
+import {isAdmin, isInstructor} from "@/features/auth/auth.util.ts";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,9 +11,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from "../../../components/ui/breadcrumb.tsx";
+} from "@/components/ui/breadcrumb.tsx";
+import {useEffect} from "react";
 
 export default function ManageInstructorsPage() {
+  useEffect(() => {
+    document.title = "Manage Instructors | Register R Us";
+  }, []);
   
   const {data: users, isPending: isLoadingUsers, error: loadUsersError} = useQuery({
     queryKey: ['users'],

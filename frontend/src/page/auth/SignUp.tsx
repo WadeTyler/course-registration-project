@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {signup} from "@/features/auth/auth.api.ts";
@@ -6,6 +6,10 @@ import type {User} from "@/types/user.types.ts";
 import Loader from "../../components/Loader.tsx";
 
 const SignUp: React.FC = () => {
+    useEffect(() => {
+        document.title = "SignUp | Register R Us";
+    }, []);
+
     const [step, setStep] = useState(1);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');

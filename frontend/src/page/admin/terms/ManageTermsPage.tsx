@@ -5,15 +5,19 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from "../../../components/ui/breadcrumb.tsx";
+} from "@/components/ui/breadcrumb.tsx";
 import {useQuery} from "@tanstack/react-query";
-import {getAllTerms} from "../../../features/term/term.api.ts";
+import {getAllTerms} from "@/features/term/term.api.ts";
 import Loader from "../../../components/Loader.tsx";
-import {DataTable} from "../../../components/data-table.tsx";
+import {DataTable} from "@/components/data-table.tsx";
 import {columns} from "./_components/columns.tsx";
 import CreateTermSheet from "./_components/CreateTermSheet.tsx";
+import {useEffect} from "react";
 
 export default function ManageTermsPage() {
+  useEffect(() => {
+    document.title = "Manage Terms | Register R Us";
+  }, []);
 
   const {data: terms, isPending: isLoadingTerms, error: loadTermsError} = useQuery({
     queryKey: ['terms'],

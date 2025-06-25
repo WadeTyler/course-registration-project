@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {getAllAssignedCourseSections} from "../../../features/coursesection/coursesection.api.ts";
+import {getAllAssignedCourseSections} from "@/features/coursesection/coursesection.api.ts";
 import Loader from "../../../components/Loader.tsx";
-import {DataTable} from "../../../components/data-table.tsx";
+import {DataTable} from "@/components/data-table.tsx";
 import {assignedSectionColumns} from "./_components/assigned-sections-columns.tsx";
 import {
   Breadcrumb,
@@ -9,9 +9,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from "../../../components/ui/breadcrumb.tsx";
+} from "@/components/ui/breadcrumb.tsx";
+import {useEffect} from "react";
 
 export default function ManageInstructorSections() {
+  useEffect(() => {
+    document.title = "Assigned Sections | Register R Us";
+  }, []);
 
   const {data: assignedSections, isPending: isLoadingSections, error: loadSectionsError} = useQuery({
     queryKey: ['assignedSections'],

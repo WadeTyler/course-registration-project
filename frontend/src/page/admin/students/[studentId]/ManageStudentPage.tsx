@@ -5,20 +5,23 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from "../../../../components/ui/breadcrumb.tsx";
+} from "@/components/ui/breadcrumb.tsx";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {getAllUsers} from "../../../../features/auth/auth.api.ts";
+import {getAllUsers} from "@/features/auth/auth.api.ts";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Loader from "../../../../components/Loader.tsx";
 import EditUserSheet from "../_components/EditUserSheet.tsx";
-import {Card, CardContent, CardHeader, CardTitle} from "../../../../components/ui/card.tsx";
-import {getUserRole} from "../../../../features/auth/auth.util.ts";
-import {getEnrollmentsByStudentId} from "../../../../features/enrollment/enrollment.api.ts";
-import {DataTable} from "../../../../components/data-table.tsx";
-import {enrollmentColumns} from "../../../../components/enrollment/enrollment-columns.tsx";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {getUserRole} from "@/features/auth/auth.util.ts";
+import {getEnrollmentsByStudentId} from "@/features/enrollment/enrollment.api.ts";
+import {DataTable} from "@/components/data-table.tsx";
+import {enrollmentColumns} from "@/components/enrollment/enrollment-columns.tsx";
 
 export default function ManageStudentPage() {
+  useEffect(() => {
+    document.title = "Manage Student | Register R Us";
+  }, []);
 
   const queryClient = useQueryClient();
   const {studentId} = useParams();

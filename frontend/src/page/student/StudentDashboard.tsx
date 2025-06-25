@@ -9,6 +9,7 @@ import Loader from "../../components/Loader.tsx";
 import {BookIcon} from "lucide-react";
 import type {Enrollment} from "@/types/enrollment.types.ts";
 import DashboardDropEnrollmentDialog from "./courses/_components/DashboardDropEnrollmentDialog.tsx";
+import {useEffect} from "react";
 
 export default function StudentDashboard() {
 
@@ -73,6 +74,11 @@ export default function StudentDashboard() {
 }
 
 function EnrollmentRow({enrollment}: {enrollment: Enrollment}) {
+
+  useEffect(() => {
+    document.title = "Student Dashboard | Register R Us";
+  }, []);
+
   return (
     <div className="w-full flex justify-between border-b py-4 last-of-type:border-b-0">
       <div className="flex flex-col gap-4">

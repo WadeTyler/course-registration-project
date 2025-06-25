@@ -1,15 +1,15 @@
 import {Link, useParams} from "react-router-dom";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {getCourseById} from "../../../../features/course/course.api.ts";
+import {getCourseById} from "@/features/course/course.api.ts";
 import {useEffect} from "react";
 import Loader from "../../../../components/Loader.tsx";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "../../../../components/ui/card.tsx";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import EditCourseSheet from "./_components/course/EditCourseSheet.tsx";
 import DeleteCourseDialog from "./_components/course/DeleteCourseDialog.tsx";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "../../../../components/ui/accordion.tsx";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion.tsx";
 import CreateCourseSectionSheet from "./_components/section/CreateCourseSectionSheet.tsx";
-import type {Course} from "../../../../types/course.types.ts";
-import type {CourseSection} from "../../../../types/course-section.types.ts";
+import type {Course} from "@/types/course.types.ts";
+import type {CourseSection} from "@/types/course-section.types.ts";
 import DeleteSectionDialog from "./_components/section/DeleteSectionDialog.tsx";
 import EditSectionSheet from "./_components/section/EditSectionSheet.tsx";
 import {
@@ -19,13 +19,17 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator
-} from "../../../../components/ui/breadcrumb.tsx";
-import type {Prerequisite} from "../../../../types/prerequisite.types.ts";
+} from "@/components/ui/breadcrumb.tsx";
+import type {Prerequisite} from "@/types/prerequisite.types.ts";
 import CreatePrerequisiteSheet from "./_components/prerequisite/CreatePrerequisiteSheet.tsx";
 import EditPrerequisiteSheet from "./_components/prerequisite/EditPrerequisiteSheet.tsx";
 import DeletePrerequisiteDialog from "./_components/prerequisite/DeletePrerequisiteDialog.tsx";
 
 export default function ManageCoursePage() {
+  useEffect(() => {
+    document.title = "Manage Course | Register R Us";
+  }, []);
+
   const queryClient = useQueryClient();
   const {courseId} = useParams();
 

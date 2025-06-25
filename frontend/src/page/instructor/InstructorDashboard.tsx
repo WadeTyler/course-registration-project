@@ -1,10 +1,14 @@
 import {useQuery} from "@tanstack/react-query";
-import {getAuthUser} from "../../features/auth/auth.api.ts";
+import {getAuthUser} from "@/features/auth/auth.api.ts";
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "../../components/ui/card.tsx";
 import {Link} from "react-router-dom";
 import {Button} from "../../components/ui/button.tsx";
+import {useEffect} from "react";
 
 export default function InstructorDashboard() {
+  useEffect(() => {
+    document.title = "Instructor Dashboard | Register R Us";
+  }, []);
 
   const {data: authUser} = useQuery({
     queryKey: ['authUser'],

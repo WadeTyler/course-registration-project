@@ -3,7 +3,7 @@ import {getAllCourses} from "@/features/course/course.api.ts";
 import Loader from "../../../components/Loader.tsx";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Label} from "@/components/ui/label.tsx";
 import {Accordion} from "@/components/ui/accordion.tsx";
 import CourseAccordionItem from "./_components/CourseAccordionItem.tsx";
@@ -17,6 +17,9 @@ import {
 
 
 export default function CoursesCatalogPage() {
+  useEffect(() => {
+    document.title = "Course Catalog | Register R Us";
+  }, []);
 
 
   const {data: courses, isPending: isLoadingCourses, error: loadCoursesError} = useQuery({
