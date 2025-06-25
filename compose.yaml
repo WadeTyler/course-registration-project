@@ -72,3 +72,7 @@ services:
 networks:
   rru_network:
     driver: bridge
+
+# Volumes for data persistence
+volumes:
+  mysql-data:
