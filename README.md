@@ -29,6 +29,7 @@ CLIENT_URL=http://localhost:5173
 
 # Frontend
 FRONTEND_PORT=5173
+VITE_API_URL=http://localhost:8484/api
 ```
 - For JWT Secret generate a random HS256 secret using [this generator](https://ij0c1ykkfk.execute-api.us-east-1.amazonaws.com/default/hs256_generator).
 - For production, change `ENVIRONMENT` to `production`

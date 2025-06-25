@@ -58,7 +58,7 @@ services:
     build:
       context: ./frontend
       args:
-        - VITE_API_URL=http://localhost:${SERVER_PORT}/api
+        - VITE_API_URL=${VITE_API_URL}
     container_name: rru_frontend
     restart: unless-stopped
     ports:
