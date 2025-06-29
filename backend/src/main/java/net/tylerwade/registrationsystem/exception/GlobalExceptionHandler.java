@@ -3,6 +3,7 @@ package net.tylerwade.registrationsystem.exception;
 import lombok.extern.slf4j.Slf4j;
 import net.tylerwade.registrationsystem.common.ErrorResponse;
 import net.tylerwade.registrationsystem.config.AppProperties;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -90,6 +91,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<?> handleNoResourceFoundException(NoResourceFoundException e) {
         return ResponseEntity.status(e.getStatusCode()).body(new ErrorResponse(Instant.now(), NOT_FOUND.value(), NOT_FOUND.getReasonPhrase(), e.getMessage()));
+    }
+
+
+    /**
+     * Handles DataIntegrityViolationException and returns an appropriate error response.
+     * @param e The DataIntegrityViolationException to handle.
+     * @return A ResponseEntity containing the error response.
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        printDebugMessage(e);
+        String message = "Cannot perform this operation due to existing data relations.";
+        return ResponseEntity.status(CONFLICT).body(
+                new ErrorResponse(Instant.now(), CONFLICT.value(), CONFLICT.getReasonPhrase(), message)
+        );
     }
 
     /**

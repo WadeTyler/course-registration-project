@@ -6,14 +6,15 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
   DialogTrigger
-} from "../../../../../../components/ui/dialog.tsx";
-import {Button} from "../../../../../../components/ui/button.tsx";
+} from "@/components/ui/dialog.tsx";
+import {Button} from "@/components/ui/button.tsx";
 import {TrashIcon} from "lucide-react";
 import Loader from "../../../../../../components/Loader.tsx";
-import type {Prerequisite} from "../../../../../../types/prerequisite.types.ts";
-import type {Course} from "../../../../../../types/course.types.ts";
-import {deletePrerequisite} from "../../../../../../features/prerequisite/prerequisite.api.ts";
+import type {Prerequisite} from "@/types/prerequisite.types.ts";
+import type {Course} from "@/types/course.types.ts";
+import {deletePrerequisite} from "@/features/prerequisite/prerequisite.api.ts";
 
 export default function DeletePrerequisiteDialog({prerequisite, course}: {
   prerequisite: Prerequisite,
@@ -44,11 +45,13 @@ export default function DeletePrerequisiteDialog({prerequisite, course}: {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>Delete Prerequisite</DialogHeader>
-        <DialogDescription>
-          You are about to delete the <b>{prerequisite.requiredCourseDepartment}-{prerequisite.requiredCourseCode}</b> prerequisite for {course.department}-{course.code}. This action is irreversible. Are you sure you want to do
-          this?
-        </DialogDescription>
+        <DialogHeader>
+          <DialogTitle>Delete Prerequisite</DialogTitle>
+          <DialogDescription>
+            You are about to delete the <b>{prerequisite.requiredCourseDepartment}-{prerequisite.requiredCourseCode}</b> prerequisite for {course.department}-{course.code}. This action is irreversible. Are you sure you want to do
+            this?
+          </DialogDescription>
+        </DialogHeader>
 
         {deleteError && (
           <p className="text-center text-destructive text-balance">{(deleteError as Error).message}</p>
