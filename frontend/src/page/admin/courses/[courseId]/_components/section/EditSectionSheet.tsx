@@ -122,7 +122,7 @@ export default function EditSectionSheet({section}: { section: CourseSection }) 
               }))}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choose an Instructor (Optional)" id="instructor"/>
+                <SelectValue placeholder="Choose an Instructor" id="instructor"/>
               </SelectTrigger>
               <SelectContent>
                 {users?.filter(user => isInstructor(user) || isAdmin(user))
